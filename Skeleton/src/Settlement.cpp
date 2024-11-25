@@ -8,7 +8,7 @@ enum class SettlementType {
     CITY,
     METROPOLIS,
 };
-
+//testjgkjsdlgslkd
 
 class Settlement
 {
