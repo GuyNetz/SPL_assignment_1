@@ -1,42 +1,23 @@
-
 #include <iostream>
 #include <string>
+#include "../include/Settlement.h"
 
+Settlement::Settlement(const string &name, SettlementType type)     //constructor
+: name(name), type(type) {}
 
-enum class SettlementType {
-    VILLAGE,
-    CITY,
-    METROPOLIS,
-};
-//testjgkjsdlgslkd
+const string &Settlement::getName() const {return name;}            //name getter
 
-class Settlement
-{
-private:
-    const std::string _name;  
-    SettlementType _type;
+SettlementType Settlement::getType() const {return type;}           //type getter
 
-    std::string type_name(SettlementType type) const
-    {
-        if(type==SettlementType::VILLAGE)
-        return "Village";
-        if(type==SettlementType::CITY)
-        return "CITY";
-        if(type==SettlementType::METROPOLIS)
-        return "METROPOLIS";
-    }
-  //  g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Settlement.o src/Settlement.cpp 
-public:
-    Settlement(const std::string &name, SettlementType type)
-    : _name(name), _type(type) {}
+const string Settlement::toString() const {                         //toString method
+if (type == SettlementType::VILLAGE) {
+    return "Settlement Name: " + getName() + ", Settlement Type: Village";
+} else if (type == SettlementType::CITY) {
+    return "Settlement Name: " + getName() + ", Settlement Type: City";
+} else if (type == SettlementType::METROPOLIS) {
+    return "Settlement Name: " + getName() + ", Settlement Type: Metropolis";
+} else {
+    return "Settlement Name: " + getName() + ", Settlement Type: Unknown";
+}
+}    
 
-    const std::string &getName() const {return _name;}
-
-    SettlementType getType() const {return _type;}
-
-     std::string toString() const {
-        std::string name1= type_name(_type);
-        return "Settlement Name: " + _name + ", Settlement Type: " + name1;
-    }
-    
-};
