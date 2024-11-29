@@ -29,7 +29,7 @@ class FacilityType {
     protected:
         const string name;
         const FacilityCategory category;
-        const int price;
+        const int price; 
         const int lifeQuality_score;
         const int economy_score;
         const int environment_score;
@@ -46,6 +46,7 @@ class Facility: public FacilityType {
         const int getTimeLeft() const;
         FacilityStatus step();
         void setStatus(FacilityStatus status);
+        void setTimeLeft(int timeLeft);
         const FacilityStatus& getStatus() const;
         const string toString() const;
 

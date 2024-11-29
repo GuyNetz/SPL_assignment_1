@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include "../include/Settlement.h"
 
 Settlement::Settlement(const string &name, SettlementType type)     //constructor
@@ -11,13 +10,13 @@ SettlementType Settlement::getType() const {return type;}           //type gette
 
 const string Settlement::toString() const {                         //toString method
 if (type == SettlementType::VILLAGE) {
-    return "Settlement Name: " + getName() + ", Settlement Type: Village";
+    return "Settlement Name: " + getName() + ", Settlement Type: Village\n";
 } else if (type == SettlementType::CITY) {
-    return "Settlement Name: " + getName() + ", Settlement Type: City";
+    return "Settlement Name: " + getName() + ", Settlement Type: City\n";
 } else if (type == SettlementType::METROPOLIS) {
-    return "Settlement Name: " + getName() + ", Settlement Type: Metropolis";
+    return "Settlement Name: " + getName() + ", Settlement Type: Metropolis\n";
 } else {
-    return "Settlement Name: " + getName() + ", Settlement Type: Unknown";
+    return "Settlement Name: " + getName() + ", Settlement Type: Unknown\n";
 }
 }    
 

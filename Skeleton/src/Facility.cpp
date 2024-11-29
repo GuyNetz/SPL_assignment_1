@@ -1,73 +1,67 @@
-#include <string>
 #include <iostream>
-using std::string;
+#include "../include/Facility.h"
+#include <sstream>
 
-enum class FacilityStatus {
-    UNDER_CONSTRUCTIONS,
-    OPERATIONAL,
-};
+//Constructor for FacilityType
+FacilityType::FacilityType(const string &name, const FacilityCategory category, const int price,
+                            const int lifeQuality_score, const int economy_score, const int environment_score)
+            :name(name), category(category), price(price), lifeQuality_score(lifeQuality_score),
+            economy_score(economy_score), environment_score(environment_score) {}
 
-enum FacilityCategory {
-    LIFE_QUALITY,
-    ECONOMY,
-    ENVIRONMENT
-};
+//FaciltyType getters
+const string &FacilityType::getName() const {return name;}
+int FacilityType::getCost() const {return price;}
+int FacilityType::getLifeQualityScore() const {return lifeQuality_score;}
+int FacilityType::getEnvironmentScore() const {return environment_score;}
+int FacilityType::getEconomyScore() const {return economy_score;}
+FacilityCategory FacilityType::getCategory() const {return category;}
 
-class FacilityType {
-protected:
-    const std::string name;
-    const FacilityCategory category;
-    const int price;
-    const int lifeQuality_score;
-    const int economy_score;
-    const int environment_score;
+//step function
+FacilityStatus Facility::step(){
+  if(getTimeLeft() != 0){
+    setTimeLeft(getTimeLeft() - 1);
+  }  
+  if(getTimeLeft() == 0){
+    setStatus(FacilityStatus::OPERATIONAL);
+  }
+  return getStatus();
+}
 
-public:
-    // Constructor
-    FacilityType(const std::string& name, int price, FacilityCategory category, 
-                 int lifeQualityScore, int economyScore, int environmentScore)
-        : name(name), price(price), category(category),
-          lifeQuality_score(lifeQualityScore), economy_score(economyScore), environment_score(environmentScore) {}
+//Facility constructors
+Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, 
+                   const int price, const int lifeQuality_score, const int economy_score, 
+                   const int environment_score)
+    : FacilityType(name, category, price, lifeQuality_score, economy_score, environment_score),
+      settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price) {}
 
-    // Getter for name
-    const std::string &getName() const {
-        return name;
-    }
 
-        int getPrice() const {
-        return price;
-    }
+Facility::Facility(const FacilityType &type, const string &settlementName)
+    : FacilityType(type),  
+      settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(type.getCost()) {}
 
-        FacilityCategory getCategory() const {
-        return category;
-    }
+//Facility getters
+const string &Facility::getSettlementName() const {return settlementName;}
+const int Facility::getTimeLeft() const {return timeLeft;}
+const FacilityStatus& Facility::getStatus() const {return status;}
 
-       int getLifeQualityScore() const {
-        return lifeQuality_score;
-    }
+//Facility setters
+void Facility::setStatus(FacilityStatus status) {this->status = status;}
+void Facility::setTimeLeft(int timeLeft) {this->timeLeft = timeLeft;}
 
-        int getEconomyScore() const {
-        return economy_score;
-    }
-    int getEnvironmentScore() const {
-        return environment_score;
-    }
-
+//toString
+const string Facility::toString() const {
+    std::stringstream ss;
+    ss << "Facility Name: " << getName() << "\n";
+    ss << "Settlement: " << getSettlementName() << "\n";
+    ss << "Price: " << getCost() << "\n";
+    ss << "Life Quality Score: " << getLifeQualityScore() << "\n";
+    ss << "Economy Score: " << getEconomyScore() << "\n";
+    ss << "Environment Score: " << getEnvironmentScore() << "\n";
+    ss << "Status: " << (status == FacilityStatus::UNDER_CONSTRUCTIONS ? "Under Construction" : "Operational") << "\n";
+    ss << "Time Left: " << getTimeLeft() << " days\n";
     
-};
+    return ss.str();
+}
 
-class Facility: public FacilityType {
-     private:
-        const string settlementName;
-        FacilityStatus status;
-        int timeLeft;
 
-    public:
-  Facility(const string &name, const string &settlementName,
-   const FacilityCategory category, const int price, const int lifeQuality_score, 
-   const int economy_score, const int environment_score)
-   :FacilityType(name,price,category,lifeQuality_score,economy_score,environment_score),
-   settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS){
-   }
        
-};
