@@ -41,6 +41,7 @@ Facility::Facility(const FacilityType &type, const string &settlementName)
 
 //Facility getters
 const string &Facility::getSettlementName() const {return settlementName;}
+const FacilityStatus &Facility::getStatus() const {return status;}
 const int Facility::getTimeLeft() const {return timeLeft;}
 const FacilityStatus& Facility::getStatus() const {return status;}
 

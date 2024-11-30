@@ -3,6 +3,7 @@
 #include "Facility.h"
 #include "Settlement.h"
 #include "SelectionPolicy.h"
+#include <iostream>
 using std::vector;
 
 enum class PlanStatus {
