@@ -65,13 +65,38 @@ void Plan::addFacility(Facility* facility){
     underConstruction.push_back(facility);
 }
 
-void Plan::step(){
-    if(settlement.getType() == SettlementType::VILLAGE){
-        if(underConstruction.size() == 0){
-            Facility* facility = const_cast<Facility*>(&selectionPolicy->selectFacility(facilityOptions));
-            addFacility(facility);
-        }
+bool Plan::isStatusAvailable() const {
+    return status == PlanStatus::AVALIABLE;
+}
+
+void Plan::updateStatus() {
+    status = PlanStatus::BUSY;
+    if((settlement.getType() == SettlementType::VILLAGE) && (underConstruction.size() < 1)){
+        status = PlanStatus::AVALIABLE;
+    }else if((settlement.getType() == SettlementType::CITY) && (underConstruction.size() < 2)){
+        status = PlanStatus::AVALIABLE;
+    }else if((settlement.getType() == SettlementType::METROPOLIS) && (underConstruction.size() < 3)){
+        status = PlanStatus::AVALIABLE;
     }
+}
+
+void Plan::step(){
+    while(isStatusAvailable()){
+        const FacilityType& selected = selectionPolicy->selectFacility(facilityOptions);
+        addFacility(new Facility(selected, settlement.getName()));
+        updateStatus();
+    }
+    for (size_t i = 0; i < underConstruction.size();) {
+        Facility* facility = underConstruction[i];  
+        facility->setTimeLeft(facility->getTimeLeft() - 1);
+
+        if (facility->getTimeLeft() == 0) {
+            facilities.push_back(facility);
+            underConstruction.erase(underConstruction.begin() + i);  
+        } else {
+            ++i;  
+        }
+    }   
 }
 
 
