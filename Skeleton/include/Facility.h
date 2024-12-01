@@ -49,7 +49,7 @@ class Facility: public FacilityType {
         void setTimeLeft(int timeLeft);
         const FacilityStatus& getStatus() const;
         const string toString() const;
-        const FacilityStatus &getStatus() const;
+        
 
     private:
         const string settlementName;

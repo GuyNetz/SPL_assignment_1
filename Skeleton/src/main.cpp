@@ -2,7 +2,8 @@
 #include <iostream>
 #include "../include/Settlement.h"      //added to check settlement class
 #include "../include/Facility.h"        //added to check Facility class
-#include "../include/SelectionPolicy.h" //added to check SelectionPolicy class
+#include "../include/SelectionPolicy.h"
+#include "../include/Plan.h" //added to check SelectionPolicy class
 using namespace std;
 
 // Simulation* backup = nullptr;
@@ -43,18 +44,18 @@ int main(int argc, char** argv){
     // cout << "Status: " << (f.getStatus() == FacilityStatus::OPERATIONAL ? "Operational" : "Under Construction");
 
     //Selection policy test
-    FacilityType Hospital = FacilityType("Hospital", FacilityCategory::LIFE_QUALITY, 5, 9, 8, 10);
-    FacilityType Kindergarten = FacilityType("Kindergarten", FacilityCategory::LIFE_QUALITY, 3, 3, 2, 1);
-    FacilityType desalinationPlant = FacilityType("Desalination Plant", FacilityCategory::ENVIRONMENT, 6, 2, 1, 3);
-    std::vector<FacilityType> v = {Hospital, Kindergarten, desalinationPlant};
+    // FacilityType Hospital = FacilityType("Hospital", FacilityCategory::LIFE_QUALITY, 5, 9, 8, 10);
+    // FacilityType Kindergarten = FacilityType("Kindergarten", FacilityCategory::LIFE_QUALITY, 3, 3, 2, 1);
+    // FacilityType desalinationPlant = FacilityType("Desalination Plant", FacilityCategory::ENVIRONMENT, 6, 2, 1, 3);
+    // std::vector<FacilityType> v = {Hospital, Kindergarten, desalinationPlant};
 
     // NaiveSelection policy1 = NaiveSelection();
     // FacilityType FaType1 = policy1.selectFacility(v);
     // cout << FaType1.getName() << std::endl;
 
-    BalancedSelection balPolicy = BalancedSelection(1,2,0);
-    FacilityType firstFacility = balPolicy.selectFacility(v);
-    cout << firstFacility.getName() << std::endl;
+    // BalancedSelection balPolicy = BalancedSelection(1,2,0);
+    // FacilityType firstFacility = balPolicy.selectFacility(v);
+    // cout << firstFacility.getName() << std::endl;
 
     // EconomySelection policy2 = EconomySelection();
     // FacilityType FaType2 = policy2.selectFacility(v);
@@ -69,4 +70,24 @@ int main(int argc, char** argv){
     // SustainabilitySelection policy3 = SustainabilitySelection();
     // FacilityType FaType3 = policy3.selectFacility(v);
     // cout << FaType3.getName() << std::endl;
+    /////////////////////////////////////testing plan
+        Settlement settelment_Test("settelment_Test",SettlementType::CITY);
+        NaiveSelection SelectionPolicy_test =  NaiveSelection();;
+        FacilityType Hospital = FacilityType("Hospital", FacilityCategory::LIFE_QUALITY, 5, 9, 8, 10);
+         FacilityType Kindergarten = FacilityType("Kindergarten", FacilityCategory::LIFE_QUALITY, 3, 3, 2, 1);
+         FacilityType desalinationPlant = FacilityType("Desalination Plant", FacilityCategory::ENVIRONMENT, 6, 2, 1, 3);
+         std::vector<FacilityType> v = {Hospital, Kindergarten, desalinationPlant};
+         int planId = 1;
+       Plan myPlan(planId,settelment_Test, &SelectionPolicy_test, v);
+       cout<<myPlan.toString();
+       myPlan.printStatus();
+       myPlan.step();
+       myPlan.isStatusAvailable();
+    //    for (size_t i = 0; i < 100; i++)
+    //    {
+    //    myPlan.printStatus();
+    //    myPlan.step();
+    //    }
+       
+        
 }

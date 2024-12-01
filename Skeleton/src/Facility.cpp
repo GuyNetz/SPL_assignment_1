@@ -43,7 +43,6 @@ Facility::Facility(const FacilityType &type, const string &settlementName)
 const string &Facility::getSettlementName() const {return settlementName;}
 const FacilityStatus &Facility::getStatus() const {return status;}
 const int Facility::getTimeLeft() const {return timeLeft;}
-const FacilityStatus& Facility::getStatus() const {return status;}
 
 //Facility setters
 void Facility::setStatus(FacilityStatus status) {this->status = status;}
