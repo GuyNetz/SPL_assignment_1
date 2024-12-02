@@ -2,8 +2,8 @@
 #include <iostream>
 #include "../include/Settlement.h"      //added to check settlement class
 #include "../include/Facility.h"        //added to check Facility class
-#include "../include/SelectionPolicy.h"
-#include "../include/Plan.h" //added to check SelectionPolicy class
+#include "../include/SelectionPolicy.h" //added to check SelectionPolicy class
+#include "../include/Plan.h"            //added to check Plan class
 using namespace std;
 
 // Simulation* backup = nullptr;
@@ -70,24 +70,30 @@ int main(int argc, char** argv){
     // SustainabilitySelection policy3 = SustainabilitySelection();
     // FacilityType FaType3 = policy3.selectFacility(v);
     // cout << FaType3.getName() << std::endl;
+
+
     /////////////////////////////////////testing plan
-        Settlement settelment_Test("settelment_Test",SettlementType::CITY);
-        NaiveSelection SelectionPolicy_test =  NaiveSelection();;
-        FacilityType Hospital = FacilityType("Hospital", FacilityCategory::LIFE_QUALITY, 5, 9, 8, 10);
-         FacilityType Kindergarten = FacilityType("Kindergarten", FacilityCategory::LIFE_QUALITY, 3, 3, 2, 1);
-         FacilityType desalinationPlant = FacilityType("Desalination Plant", FacilityCategory::ENVIRONMENT, 6, 2, 1, 3);
-         std::vector<FacilityType> v = {Hospital, Kindergarten, desalinationPlant};
-         int planId = 1;
-       Plan myPlan(planId,settelment_Test, &SelectionPolicy_test, v);
-       cout<<myPlan.toString();
-       myPlan.printStatus();
-       myPlan.step();
-       myPlan.isStatusAvailable();
-    //    for (size_t i = 0; i < 100; i++)
-    //    {
-    //    myPlan.printStatus();
-    //    myPlan.step();
-    //    }
-       
+        // Settlement settelment_Test("settelment_Test",SettlementType::CITY);
+        // NaiveSelection naiveSelectionPolicy_test =  NaiveSelection();
+        // EconomySelection economySelectionPolicy_test = EconomySelection();
+        // FacilityType Hospital = FacilityType("Hospital", FacilityCategory::ECONOMY, 5, 9, 8, 10);
+        // FacilityType Kindergarten = FacilityType("Kindergarten", FacilityCategory::LIFE_QUALITY, 2, 3, 2, 1);
+        // FacilityType desalinationPlant = FacilityType("Desalination Plant", FacilityCategory::ENVIRONMENT, 3, 2, 1, 3);
+        // std::vector<FacilityType> v = {Hospital, Kindergarten, desalinationPlant};
+        // int planId = 1;
+        // Plan myPlan(planId,settelment_Test, &naiveSelectionPolicy_test, v);
+        // cout<<myPlan.toString();
         
+        
+        // myPlan.step();
+        // cout<<myPlan.toString();
+        
+        
+        // myPlan.step();
+        // cout<<myPlan.toString();
+
+        // myPlan.setSelectionPolicy(&economySelectionPolicy_test);
+
+        // myPlan.step();
+        // cout<<myPlan.toString();      
 }

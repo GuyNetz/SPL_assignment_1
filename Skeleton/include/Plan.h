@@ -26,7 +26,7 @@ class Plan {
         void updateStatus();
         bool isStatusAvailable() const;
         Plan(const Plan& Plan) = delete;// to remove warnings
-       Plan &operator=(const Plan &) = delete;// to remove warnings
+        Plan &operator=(const Plan &) = delete;// to remove warnings
 
     private:
         int plan_id;

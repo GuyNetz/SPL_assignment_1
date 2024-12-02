@@ -28,14 +28,15 @@ const string Plan::toString() const{
     if(status == PlanStatus::BUSY){
         planStatus = "BUSY";
     }
-    string facilitiesList = "";             //getting list of facilities as a string
-    for (Facility* facility : facilities) {
-        string facility_status = "UNDER_CONSTRUCTIONS";
-        if(facility->getStatus() == FacilityStatus::OPERATIONAL){
-           facility_status = "OPERATIONAL";
-        }    
-        facilitiesList = facilitiesList + "FacilityName: " + facility->getName() + "\n" + 
-                                        "FacilityStatus: " + facility_status + "\n";
+    string under_construction_list = "";             //getting list of under construction facilities as a string
+    for (Facility* facility : underConstruction) {  
+        under_construction_list = under_construction_list + "FacilityName: " + facility->getName() + "\n" + 
+                                                            "FacilityStatus: UNDER_CONSTRUCTIONS \n";
+    }
+    string operational_list = "";             //getting list of operational facilities as a string
+    for (Facility* facility : facilities) {   
+        operational_list = operational_list + "FacilityName: " + facility->getName() + "\n" + 
+                                              "FacilityStatus: OPERATIONAL \n";
     }
     return "PlanID: " + std::to_string(plan_id) + "\n" +        //returning full plan string
             "SettlementName: " + settlement.getName() + "\n" +
@@ -44,7 +45,7 @@ const string Plan::toString() const{
             "LifeQualityScore: " + std::to_string(life_quality_score) + "\n" + 
             "EconomyScore: " + std::to_string(economy_score) + "\n" +
             "EnvironmentScore: " + std::to_string(environment_score) + "\n" +
-            facilitiesList;
+            under_construction_list + operational_list;
 }
 
 //setters
@@ -88,11 +89,15 @@ void Plan::step(){
     }
     for (size_t i = 0; i < underConstruction.size();) {
         Facility* facility = underConstruction[i];  
-        facility->setTimeLeft(facility->getTimeLeft() - 1);
+        facility->step();
 
         if (facility->getTimeLeft() == 0) {
             facilities.push_back(facility);
-            underConstruction.erase(underConstruction.begin() + i);  
+            life_quality_score = life_quality_score + facility->getLifeQualityScore();
+            economy_score = economy_score + facility->getEconomyScore();
+            environment_score = environment_score + facility->getEnvironmentScore();
+            underConstruction.erase(underConstruction.begin() + i);
+            status = PlanStatus::AVALIABLE;  
         } else {
             ++i;  
         }
