@@ -14,6 +14,7 @@ enum class PlanStatus {
 class Plan {
     public:
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
+        Plan(const Plan& other);
         const int getlifeQualityScore() const;
         const int getEconomyScore() const;
         const int getEnvironmentScore() const;
@@ -25,8 +26,9 @@ class Plan {
         const string toString() const;
         void updateStatus();
         bool isStatusAvailable() const;
-        Plan(const Plan& Plan) = delete;// to remove warnings
-        Plan &operator=(const Plan &) = delete;// to remove warnings
+        Plan& operator=(const Plan& other) = delete;
+        Plan& operator=(Plan&& other) = delete;  
+
 
     private:
         int plan_id;

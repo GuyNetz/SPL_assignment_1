@@ -14,6 +14,21 @@ Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *sele
     life_quality_score(0),
     economy_score(0),
     environment_score(0) {}
+
+//copy constructor
+Plan::Plan(const Plan& other)
+    : plan_id(other.plan_id),
+      settlement(other.settlement),
+      selectionPolicy(other.selectionPolicy ? other.selectionPolicy->clone() : nullptr),
+      status(other.status),
+      facilities(other.facilities),
+      underConstruction(other.underConstruction),
+      facilityOptions(other.facilityOptions),
+      life_quality_score(other.life_quality_score),
+      economy_score(other.economy_score),
+      environment_score(other.environment_score) {}
+
+
 //getters
 const int Plan::getlifeQualityScore() const{return life_quality_score;}
 const int Plan::getEconomyScore() const{return economy_score;}
