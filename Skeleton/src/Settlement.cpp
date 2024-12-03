@@ -10,13 +10,12 @@ SettlementType Settlement::getType() const {return type;}           //type gette
 
 const string Settlement::toString() const {                         //toString method
 if (type == SettlementType::VILLAGE) {
-    return "Settlement Name: " + getName() + ", Settlement Type: Village\n";
+    return "Settlement Name: " + name + ", Settlement Type: Village\n";
 } else if (type == SettlementType::CITY) {
-    return "Settlement Name: " + getName() + ", Settlement Type: City\n";
+    return "Settlement Name: " + name + ", Settlement Type: City\n";
 } else if (type == SettlementType::METROPOLIS) {
-    return "Settlement Name: " + getName() + ", Settlement Type: Metropolis\n";
-} else {
-    return "Settlement Name: " + getName() + ", Settlement Type: Unknown\n";
+    return "Settlement Name: " + name + ", Settlement Type: Metropolis\n";
 }
+return "Error: Unknown settlement type\n";
 }    
 

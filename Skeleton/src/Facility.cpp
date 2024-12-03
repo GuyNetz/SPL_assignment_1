@@ -16,17 +16,6 @@ int FacilityType::getEnvironmentScore() const {return environment_score;}
 int FacilityType::getEconomyScore() const {return economy_score;}
 FacilityCategory FacilityType::getCategory() const {return category;}
 
-//step function
-FacilityStatus Facility::step(){
-  if(getTimeLeft() != 0){
-    setTimeLeft(getTimeLeft() - 1);
-  }  
-  if(getTimeLeft() == 0){
-    setStatus(FacilityStatus::OPERATIONAL);
-  }
-  return getStatus();
-}
-
 //Facility constructors
 Facility::Facility(const string &name, const string &settlementName, const FacilityCategory category, 
                    const int price, const int lifeQuality_score, const int economy_score, 
@@ -39,6 +28,19 @@ Facility::Facility(const FacilityType &type, const string &settlementName)
     : FacilityType(type),  
       settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(type.getCost()) {}
 
+
+//step function
+FacilityStatus Facility::step(){
+  if(status == FacilityStatus::UNDER_CONSTRUCTIONS){
+    if(timeLeft > 0){
+      timeLeft = timeLeft - 1;
+    }
+    if(timeLeft == 0){
+      status = FacilityStatus::OPERATIONAL;
+    }
+  }
+  return status;
+}
 //Facility getters
 const string &Facility::getSettlementName() const {return settlementName;}
 const FacilityStatus &Facility::getStatus() const {return status;}

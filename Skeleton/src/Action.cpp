@@ -29,28 +29,21 @@ AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 
 /////////////////////////////////// selection policy/settlement name inccorect need to return an error
 void AddPlan::act(Simulation &simulation){
-    if (!simulation.isSettlementExists(settlementName))
-    {
+    if (!simulation.isSettlementExists(settlementName)){
        error("Cannot create this plan");
     }
     
     Settlement *settlementPtr = &simulation.getSettlement(settlementName);
     if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), &NaiveSelection());
-
     }else if(selectionPolicy == "bal"){
         simulation.addPlan(simulation.getSettlement(settlementName), &BalancedSelection(0,0,0) );
-
-    }else if (selectionPolicy == "eco")
-    {
+    }else if (selectionPolicy == "eco"){
         simulation.addPlan(simulation.getSettlement(settlementName), &EconomySelection());
-
-    }else if (selectionPolicy == "env")
-    {
+    }else if (selectionPolicy == "env"){
         simulation.addPlan(simulation.getSettlement(settlementName), &SustainabilitySelection());
-
+    } else{  error("Cannot create this plan");
     }
-    else  error("Cannot create this plan");
     
 }
 ///////////////////// not sure of the syntax but something like this

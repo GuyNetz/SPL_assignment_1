@@ -6,6 +6,7 @@
 #include "Settlement.h"
 using std::string;
 using std::vector;
+extern Simulation* backup;
 
 class BaseAction;
 class SelectionPolicy;
@@ -33,3 +34,4 @@ class Simulation {
         vector<Settlement*> settlements;
         vector<FacilityType> facilitiesOptions;
 };
+

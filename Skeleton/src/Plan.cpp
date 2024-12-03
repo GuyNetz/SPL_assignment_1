@@ -64,8 +64,11 @@ const string Plan::toString() const{
 }
 
 //setters
-void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy){
-    this->selectionPolicy = selectionPolicy;
+void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {
+    if (this->selectionPolicy != nullptr) { 
+        delete this->selectionPolicy; 
+    }
+    this->selectionPolicy = selectionPolicy; 
 }
 
 //printStatus method

@@ -59,15 +59,14 @@ BalancedSelection *BalancedSelection::clone() const{
 EconomySelection::EconomySelection()    //constructor
 :lastSelectedIndex(-1) {} 
 
-const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){    //select func
+const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
     lastSelectedIndex = (lastSelectedIndex + 1) % facilitiesOptions.size();
-    for (int i= lastSelectedIndex; i < static_cast<int>(facilitiesOptions.size()); i = (i + 1) % facilitiesOptions.size()){
-        if(facilitiesOptions[i].getCategory()==FacilityCategory::ECONOMY){ 
-            lastSelectedIndex = i;
-            return facilitiesOptions[i];
+    for (const auto& facility : facilitiesOptions) {
+        if (facility.getCategory() == FacilityCategory::ECONOMY) {
+            return facility;
         }
     }
-    return facilitiesOptions[lastSelectedIndex]; //shouldnt get here
+    return facilitiesOptions[lastSelectedIndex];  // fallback in case no economy facilities are found
 }
 
 const string EconomySelection::toString() const{
@@ -82,15 +81,14 @@ EconomySelection *EconomySelection::clone() const{
 SustainabilitySelection::SustainabilitySelection()    //constructor
 :lastSelectedIndex(-1) {} 
 
-const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){ //select func
+const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
     lastSelectedIndex = (lastSelectedIndex + 1) % facilitiesOptions.size();
-    for (int i = lastSelectedIndex; i < static_cast<int>(facilitiesOptions.size()); i = (i + 1) % facilitiesOptions.size()) {
-        if(facilitiesOptions[i].getCategory()==FacilityCategory::ENVIRONMENT){ 
-            lastSelectedIndex = i;
-            return facilitiesOptions[i];
+    for (const auto& facility : facilitiesOptions) {    //auto enables the compiler to read the type from the vector
+        if (facility.getCategory() == FacilityCategory::ENVIRONMENT) {
+            return facility;
         }
     }
-    return facilitiesOptions[lastSelectedIndex]; //shouldnt get here
+    return facilitiesOptions[lastSelectedIndex];  // fallback in case no sustainability facilities are found
 }
 
 const string SustainabilitySelection::toString() const{
