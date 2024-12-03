@@ -28,6 +28,7 @@ class Plan {
         bool isStatusAvailable() const;
         Plan& operator=(const Plan& other) = delete;
         Plan& operator=(Plan&& other) = delete;  
+        string policy_tostring();
 
 
     private:

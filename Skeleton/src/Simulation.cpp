@@ -128,3 +128,11 @@ void Simulation::open() {
     *this = *backup; // Assuming the assignment operator for Simulation is implemented
     std::cout << "Simulation restored from backup." << std::endl;
 }
+
+void Simulation::print_action_log(){
+    for (size_t i = 0; i < actionsLog.size(); i++)
+    {
+        std::cout << actionsLog[i]; << std::endl; 
+    }
+    
+}

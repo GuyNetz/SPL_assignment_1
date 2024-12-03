@@ -13,7 +13,7 @@ class BaseAction{
     public:
         BaseAction();
         ActionStatus getStatus() const;
-        
+        const string status_string() const;
         virtual void act(Simulation& simulation)=0;
         virtual const string toString() const=0;
         virtual BaseAction* clone() const = 0;
@@ -98,6 +98,7 @@ class ChangePlanPolicy : public BaseAction {
         void act(Simulation &simulation) override;
         ChangePlanPolicy *clone() const override;
         const string toString() const override;
+        
     private:
         const int planId;
         const string newPolicy;
