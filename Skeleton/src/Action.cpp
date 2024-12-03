@@ -42,13 +42,13 @@ void AddPlan::act(Simulation &simulation){
     
     
     if(selectionPolicy == "nve"){
-        simulation.addPlan(simulation.getSettlement(settlementName), &NaiveSelection());
+        simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());
     }else if(selectionPolicy == "bal"){
-        simulation.addPlan(simulation.getSettlement(settlementName), &BalancedSelection(0,0,0) );
+        simulation.addPlan(simulation.getSettlement(settlementName), new BalancedSelection(0,0,0) );
     }else if (selectionPolicy == "eco"){
-        simulation.addPlan(simulation.getSettlement(settlementName), &EconomySelection());
+        simulation.addPlan(simulation.getSettlement(settlementName), new EconomySelection());
     }else if (selectionPolicy == "env"){
-        simulation.addPlan(simulation.getSettlement(settlementName), &SustainabilitySelection());
+        simulation.addPlan(simulation.getSettlement(settlementName), new SustainabilitySelection());
     } else{  error("Cannot create this plan");
     }
     
@@ -73,7 +73,7 @@ settlementType(settlementType)
 void AddSettlement::act(Simulation &simulation){
    if (!simulation.isSettlementExists(settlementName))
    {
-    simulation.addSettlement(&Settlement(settlementName,settlementType));
+    simulation.addSettlement(new Settlement(settlementName,settlementType));
    }
    else
    error("cannot create this settlement");
@@ -183,18 +183,18 @@ void ChangePlanPolicy::act(Simulation &simulation)
     string i,a;
     a=simulation.getPlan(planId).policy_tostring();
     if(newPolicy == "nve"&&simulation.getPlan(planId).toString()!="nve" ){
-        simulation.getPlan(planId).setSelectionPolicy(&NaiveSelection());
+        simulation.getPlan(planId).setSelectionPolicy(new NaiveSelection());
         i="Naive";
     }
     else if(newPolicy == "bal"&&simulation.getPlan(planId).toString()!="bal"){
-        simulation.getPlan(planId).setSelectionPolicy(&BalancedSelection(0,0,0));
+        simulation.getPlan(planId).setSelectionPolicy(new BalancedSelection(0,0,0));
         i="Balanced";
     }
     else if (newPolicy == "eco"&&simulation.getPlan(planId).toString()!="eco"){
-        simulation.getPlan(planId).setSelectionPolicy(&EconomySelection());
+        simulation.getPlan(planId).setSelectionPolicy(new EconomySelection());
         i="Economy";
     }else if (newPolicy == "env"&&simulation.getPlan(planId).toString()!="env"){
-        simulation.getPlan(planId).setSelectionPolicy(&SustainabilitySelection());
+        simulation.getPlan(planId).setSelectionPolicy(new SustainabilitySelection());
         i="Sustainability";
     } 
     else{  error("Cannot change selection policy");}
@@ -213,5 +213,4 @@ void ChangePlanPolicy::act(Simulation &simulation)
 PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
-    
 }

@@ -1,5 +1,6 @@
 #include "../include/Simulation.h"
 #include "../include/Auxiliary.h"
+#include "../include/Action.h"
 #include <string> 
 #include <sstream>
 #include <fstream>
@@ -130,9 +131,7 @@ void Simulation::open() {
 }
 
 void Simulation::print_action_log(){
-    for (size_t i = 0; i < actionsLog.size(); i++)
-    {
-        std::cout << actionsLog[i]; << std::endl; 
-    }
-    
+    for (size_t i = 0; i < actionsLog.size(); i++) {
+        std::cout << actionsLog[i]->toString() << std::endl;  // Directly use -> on actionsLog[i]
+    } 
 }
