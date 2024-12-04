@@ -210,7 +210,68 @@ void ChangePlanPolicy::act(Simulation &simulation)
 
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////Change Plan Policy class
+
 PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
+    simulation.print_action_log();
 }
+
+PrintActionsLog *PrintActionsLog::clone() const{
+    return new PrintActionsLog();
+}
+
+const string PrintActionsLog::toString() const{
+    return "log" + this->status_string() ;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////close class
+Close::Close(){}
+
+void Close::act(Simulation &simulation){
+    simulation.close();
+}
+
+Close *Close::clone() const{ 
+return new Close();
+}
+
+const string Close::toString() const{
+    return " close" + this->status_string();
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////Backup simulation class BackupSimulation()
+
+BackupSimulation::BackupSimulation(){}
+/////// empty
+void BackupSimulation::act(Simulation &simulation){
+    
+}
+
+BackupSimulation *BackupSimulation::clone() const{ 
+    return new BackupSimulation();
+    }
+
+const string BackupSimulation::toString() const{
+    return "backup " + this->status_string();
+   }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////Backup simulation class RestoreSimulation()
+
+RestoreSimulation::RestoreSimulation(){}
+
+void RestoreSimulation::act(Simulation &simulation){
+
+}
+
+RestoreSimulation *RestoreSimulation::clone() const{
+ return new RestoreSimulation();
+}
+
+const string RestoreSimulation::toString() const{
+    return "restore " + this->status_string();
+   }
