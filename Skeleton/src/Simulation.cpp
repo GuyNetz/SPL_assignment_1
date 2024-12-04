@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iostream>
 
+Simulation* backup = nullptr;
+
 //constructor
 Simulation::Simulation(const string &configFilePath):
 isRunning(false),
@@ -73,6 +75,7 @@ facilitiesOptions() {
 }
 
 void Simulation::start() {
+    std::cout<<"The simulation has started"<<std::endl;
     open(); // Start the simulation
 
     std::string command;

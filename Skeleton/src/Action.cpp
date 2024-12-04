@@ -1,7 +1,7 @@
 #include "../include/Action.h"
 #include <string> 
 #include <sstream>
-
+extern Simulation* backup;
 //****************************** BaseAction ******************************
 //constructor
 BaseAction::BaseAction()
@@ -210,14 +210,14 @@ void ChangePlanPolicy::act(Simulation &simulation)
         i="Sustainability";
     } 
     else{  error("Cannot change selection policy");}
-    
-    // if(&i!=nullptr)
-    // {
-    //     std::cout << "planID: " << planId << std::endl;
-    //     std::cout << "previousPolicy: " << a << std::endl;
-    //     std::cout << "newPolicy: " << i << std::endl;
+    if(i!="")
+    {
+       std::cout << "planID: " << planId << std::endl;
+       std::cout << "previousPolicy: " << a << std::endl;
+       std::cout << "newPolicy: " << i << std::endl;
+    }
 
-    // }
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +260,11 @@ const string Close::toString() const{
 BackupSimulation::BackupSimulation(){}
 /////// empty
 void BackupSimulation::act(Simulation &simulation){
-    
+    if (backup != nullptr) {
+        delete backup;  
+        backup = nullptr; 
+    }
+    backup = new Simulation(simulation);
 }
 
 BackupSimulation *BackupSimulation::clone() const{ 
@@ -276,8 +280,10 @@ const string BackupSimulation::toString() const{
 
 RestoreSimulation::RestoreSimulation(){}
 
-void RestoreSimulation::act(Simulation &simulation){
-
+void RestoreSimulation::act(Simulation &simulation) {
+    if (backup != nullptr) {
+        simulation = *backup;
+    }
 }
 
 RestoreSimulation *RestoreSimulation::clone() const{

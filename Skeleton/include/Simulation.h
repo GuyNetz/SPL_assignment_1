@@ -6,12 +6,13 @@
 #include "Settlement.h"
 using std::string;
 using std::vector;
-// extern Simulation* backup;
+
 
 class BaseAction;
 class SelectionPolicy;
 
 class Simulation {
+    
     public:
         Simulation(const string &configFilePath);
         void start();
@@ -42,3 +43,6 @@ class Simulation {
         vector<FacilityType> facilitiesOptions;
 };
 
+
+
+extern Simulation* backup;
