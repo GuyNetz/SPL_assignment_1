@@ -2,9 +2,10 @@
 #include <string> 
 #include <sstream>
 
+//****************************** BaseAction ******************************
 //constructor
 BaseAction::BaseAction()
-:errorMsg(), status() {}
+:errorMsg(""), status(ActionStatus::COMPLETED) {}
 
 //getters
 ActionStatus BaseAction::getStatus() const{return status;}
@@ -18,92 +19,99 @@ void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg;
 }
-const string BaseAction::status_string() const
-{
-    if (status==ActionStatus::COMPLETED)
-    {
-        return "COMPLETED";
-    }
-    else{return "ERROR";}
-}
-const string &BaseAction::getErrorMsg() const{return errorMsg;}
-/////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////Add Plan class
 
-///constructor
+const string &BaseAction::getErrorMsg() const{return errorMsg;}
+
+const string BaseAction::statusToString() const{
+    if (status == ActionStatus::COMPLETED){
+        return "COMPLETED";
+    } else {
+        return "ERROR";
+    }
+}
+
+//****************************** SimulateStep ******************************
+SimulateStep::SimulateStep(const int numOfSteps) : numOfSteps(numOfSteps) {}
+
+void SimulateStep::act(Simulation &simulation) {
+    for (int i = 0; i < numOfSteps; ++i) {
+        simulation.step();
+    }
+    complete();
+}
+
+const string SimulateStep::toString() const {
+    return "step " + std::to_string(numOfSteps) + " " + statusToString();
+}
+
+SimulateStep *SimulateStep::clone() const {
+    return new SimulateStep(*this);
+}
+
+// ****************************** AddPlan ******************************
+//constructor
 AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 :settlementName(settlementName), selectionPolicy(selectionPolicy){}
 
-/////////////////////////////////// selection policy/settlement name inccorect need to return an error
+//act function
 void AddPlan::act(Simulation &simulation){
     if (!simulation.isSettlementExists(settlementName)){
        error("Cannot create this plan");
-    }
-    
-    
-    if(selectionPolicy == "nve"){
+    }else if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());
     }else if(selectionPolicy == "bal"){
-        simulation.addPlan(simulation.getSettlement(settlementName), new BalancedSelection(0,0,0) );
+        simulation.addPlan(simulation.getSettlement(settlementName), new BalancedSelection(0,0,0));
     }else if (selectionPolicy == "eco"){
         simulation.addPlan(simulation.getSettlement(settlementName), new EconomySelection());
     }else if (selectionPolicy == "env"){
         simulation.addPlan(simulation.getSettlement(settlementName), new SustainabilitySelection());
-    } else{  error("Cannot create this plan");
-    }
-    
-}
-///////////////////// not sure of the syntax but something like this
- const string AddPlan::toString() const{
-    return "plan"+ settlementName +" selection policy= "+ selectionPolicy + this->status_string() ;
- }
-//////////////////////// this should be enough?
- AddPlan* AddPlan::clone() const{
-return new AddPlan(settlementName,selectionPolicy);
+    } else {  error("Cannot create this plan");
+    }  
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////Add Settlement class
+ const string AddPlan::toString() const{
+    return "plan " + settlementName + " " + selectionPolicy + " " + this->statusToString();
+ }
+
+ AddPlan* AddPlan::clone() const{
+    return new AddPlan(*this);
+}
+
+// ****************************** AddSettlement ******************************
 
 AddSettlement::AddSettlement(const string &settlementName,SettlementType settlementType):
-settlementName(settlementName),
-settlementType(settlementType)
-{}
+settlementName(settlementName), settlementType(settlementType) {}
 
 void AddSettlement::act(Simulation &simulation){
-   if (!simulation.isSettlementExists(settlementName))
-   {
-    simulation.addSettlement(new Settlement(settlementName,settlementType));
+   if (simulation.isSettlementExists(settlementName)){
+        error("Settlement already exists");
+   }else{
+        simulation.addSettlement(&Settlement(settlementName,settlementType));
+        complete();
    }
-   else
-   error("cannot create this settlement");
-    
-    
-}
-
-AddSettlement*AddSettlement::clone() const{
-    return new AddSettlement(settlementName,settlementType);
 }
 
  const string AddSettlement::toString() const{
-    switch (settlementType)
-    {
-    case SettlementType::CITY:
-         return "settlement "+ settlementName +"  " + "CITY " + this->status_string();
-          break;
-    case SettlementType::VILLAGE:
-        return "settlement "+ settlementName +"  " + "VILLAGE "+ this->status_string() ;
-        break;
-    case SettlementType::METROPOLIS:
-        return "settlement "+ settlementName +"  " + "METROPOLIS " + this->status_string() ;
-        break;
+    switch (settlementType){
+        case SettlementType::VILLAGE:
+            return "settlement " + settlementName + " 0 "+ this->statusToString() ;
+            break;
+        case SettlementType::CITY:
+            return "settlement " + settlementName + " 1 " + this->statusToString();
+            break;
+        case SettlementType::METROPOLIS:
+            return "settlement " + settlementName + " 2 " + this->statusToString() ;
+            break;
     }
     return "error"; // shouldnt get here
  }
 
- ////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////Add Facility class
+ AddSettlement*AddSettlement::clone() const{
+    return new AddSettlement(*this);
+}
 
+// ****************************** AddFacility ******************************
+//constructor
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, 
 const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
 facilityName(facilityName),
@@ -111,37 +119,38 @@ facilityCategory(facilityCategory),
 price(price),
 lifeQualityScore(lifeQualityScore),
 economyScore(economyScore),
-environmentScore(environmentScore)
-{}
+environmentScore(environmentScore) {}
 
-// add facility but there is no case for error.
+// act function
 void AddFacility::act(Simulation &simulation){
-    simulation.addFacility(FacilityType(facilityName,facilityCategory,price,
-    lifeQualityScore,economyScore,environmentScore));
-}
-
-AddFacility* AddFacility::clone() const{
-    return new AddFacility(facilityName,facilityCategory, 
-price,lifeQualityScore, economyScore,  environmentScore);
+    if (simulation.isFacilityExists(facilityName)){
+        error("Facility already exists");
+   }else{
+        simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
+        complete();
+   }
 }
 
 const string AddFacility::toString() const{
     string a;
-    switch (facilityCategory)
-    {
-    case  FacilityCategory::LIFE_QUALITY:
-        a="0";
-        break;
-    case FacilityCategory::ECONOMY:
-    a="1";
-    break;
-    case FacilityCategory::ENVIRONMENT:
-    a="2";
-    break;
+    switch (facilityCategory){
+        case  FacilityCategory::LIFE_QUALITY:
+            a="0";
+            break;
+        case FacilityCategory::ECONOMY:
+            a="1";
+            break;
+        case FacilityCategory::ENVIRONMENT:
+            a="2";
+            break;
     }
-    return "facility "+ facilityName + " "  + a+" " +  std::to_string(price) + " "+
-    std::to_string(lifeQualityScore) +
-    " " +std::to_string(economyScore) + " " +std::to_string(environmentScore)+" "+this->status_string() ;
+    return "facility " + facilityName + " "  + a + " " +  std::to_string(price) + " " +
+    std::to_string(lifeQualityScore) + " " +std::to_string(economyScore) + " " + 
+    std::to_string(environmentScore)+ " " + this->statusToString() ;
+}
+
+AddFacility* AddFacility::clone() const{
+    return new AddFacility(*this);
 }
 
 
@@ -161,7 +170,7 @@ PrintPlanStatus *PrintPlanStatus::clone() const{
 
 const string PrintPlanStatus::toString() const
 {
-    return "planStatus  "+planId + this->status_string() ;
+    return "planStatus  "+planId + this->statusToString() ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +183,7 @@ newPolicy(newPolicy)
 
 const std::string ChangePlanPolicy::toString() const
 { 
-    return "changePolicy "+std::to_string(planId) +" "+ newPolicy +this->status_string();
+    return "changePolicy "+std::to_string(planId) +" "+ newPolicy +this->statusToString();
 }
 
 
@@ -222,7 +231,7 @@ PrintActionsLog *PrintActionsLog::clone() const{
 }
 
 const string PrintActionsLog::toString() const{
-    return "log" + this->status_string() ;
+    return "log" + this->statusToString() ;
 }
 
 
@@ -239,7 +248,7 @@ return new Close();
 }
 
 const string Close::toString() const{
-    return " close" + this->status_string();
+    return " close" + this->statusToString();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +265,7 @@ BackupSimulation *BackupSimulation::clone() const{
     }
 
 const string BackupSimulation::toString() const{
-    return "backup " + this->status_string();
+    return "backup " + this->statusToString();
    }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -273,5 +282,5 @@ RestoreSimulation *RestoreSimulation::clone() const{
 }
 
 const string RestoreSimulation::toString() const{
-    return "restore " + this->status_string();
+    return "restore " + this->statusToString();
    }

@@ -21,13 +21,37 @@ Plan::Plan(const Plan& other)
       settlement(other.settlement),
       selectionPolicy(other.selectionPolicy ? other.selectionPolicy->clone() : nullptr),
       status(other.status),
-      facilities(other.facilities),
-      underConstruction(other.underConstruction),
       facilityOptions(other.facilityOptions),
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
-      environment_score(other.environment_score) {}
+      environment_score(other.environment_score) {
+    
+    // Deep copy for facilities
+    for (Facility* facility : other.facilities) {
+        facilities.push_back(new Facility(*facility)); // Create new Facility instance
+    }
 
+    // Deep copy for underConstruction
+    for (Facility* facility : other.underConstruction) {
+        underConstruction.push_back(new Facility(*facility)); // Create new Facility instance
+    }
+}
+
+
+//destructor
+Plan::~Plan() {
+    delete selectionPolicy; // Free the memory allocated for selectionPolicy
+
+    // Free memory for each Facility in the facilities vector
+    for (Facility* facility : facilities) {
+        delete facility;
+    }
+
+    // Free memory for each Facility in the underConstruction vector
+    for (Facility* facility : underConstruction) {
+        delete facility;
+    }
+}
 
 //getters
 const int Plan::getlifeQualityScore() const{return life_quality_score;}

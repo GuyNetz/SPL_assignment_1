@@ -13,7 +13,7 @@ class BaseAction{
     public:
         BaseAction();
         ActionStatus getStatus() const;
-        const string status_string() const;
+        const string statusToString() const;
         virtual void act(Simulation& simulation)=0;
         virtual const string toString() const=0;
         virtual BaseAction* clone() const = 0;

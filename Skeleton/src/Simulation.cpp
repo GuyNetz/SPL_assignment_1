@@ -72,8 +72,76 @@ facilitiesOptions() {
     }
 }
 
-void Simulation::start(){
-    isRunning = true;
+void Simulation::start() {
+    open(); // Start the simulation
+
+    std::string command;
+    while (isRunning) {
+        std::getline(std::cin, command); // Read the user command
+
+        // Parse the command into arguments
+        std::vector<std::string> parsedCommand = Auxiliary::parseArguments(command);
+        if (parsedCommand.empty()) {
+            continue; // Ignore empty commands
+        }
+
+        const std::string &action = parsedCommand[0];
+        BaseAction *actionObject = nullptr;
+
+        if (action == "step") {
+            if (parsedCommand.size() == 2) {
+                int numOfSteps = std::stoi(parsedCommand[1]);
+                actionObject = new SimulateStep(numOfSteps);
+            }
+
+        } else if (action == "plan") {
+            if (parsedCommand.size() == 3) {
+                const std::string &settlementName = parsedCommand[1];
+                const std::string &selectionPolicy = parsedCommand[2];
+                actionObject = new AddPlan(settlementName, selectionPolicy);
+            }
+
+        } else if (action == "log") {
+            if (parsedCommand.size() == 1) {
+                actionObject = new PrintActionsLog();
+            }
+
+        } else if (action == "close") {
+            if (parsedCommand.size() == 1) {
+                actionObject = new Close();
+            }
+
+        } else if (action == "backup") {
+            if (parsedCommand.size() == 1) {
+                actionObject = new BackupSimulation();
+            }
+
+        } else if (action == "restore") {
+            if (parsedCommand.size() == 1) {
+                actionObject = new RestoreSimulation();
+            }
+
+        } else if (action == "print_status") {
+            if (parsedCommand.size() == 2) {
+                int planID = std::stoi(parsedCommand[1]);
+                actionObject = new PrintPlanStatus(planID);
+            }
+
+        } else if (action == "change_policy") {
+            if (parsedCommand.size() == 3) {
+                int planID = std::stoi(parsedCommand[1]);
+                const std::string &newPolicy = parsedCommand[2];
+                actionObject = new ChangePlanPolicy(planID, newPolicy);
+            }
+        }
+
+        if (actionObject != nullptr) {
+            actionObject->act(*this); // Execute the action
+            delete actionObject;     // Free the memory for the action
+        } else {
+            std::cout << "Unknown command: " << command << std::endl;
+        }
+    }
 }
 
 //adds a new plan to plans vector using the ID counter
@@ -112,6 +180,15 @@ bool Simulation::addFacility(FacilityType facility) {
 bool Simulation::isSettlementExists(const string &settlementName){
     for (Settlement *settlement : settlements) {
         if (settlement->getName() == settlementName) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Simulation::isFacilityExists(const string &facilityName){
+    for (FacilityType facility : facilitiesOptions) {
+        if (facility.getName() == facilityName) {
             return true;
         }
     }
@@ -166,16 +243,11 @@ void Simulation::close() {
 
 
 void Simulation::open() {
-    if (backup == nullptr) {
-        std::cerr << "Error: No backup available to restore." << std::endl;
-        return;
-    }
-
-    // Restore the backup into the current simulation
-    *this = *backup; // Assuming the assignment operator for Simulation is implemented
-    std::cout << "Simulation restored from backup." << std::endl;
+    isRunning = true;
 }
 
+
+//prints actions log
 void Simulation::print_action_log(){
     for (size_t i = 0; i < actionsLog.size(); i++) {
         std::cout << actionsLog[i]->toString() << std::endl;  // Directly use -> on actionsLog[i]
