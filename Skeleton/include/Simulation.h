@@ -27,6 +27,11 @@ class Simulation {
         void close();
         void open();
         void print_action_log();
+        ~Simulation();
+        Simulation(const Simulation& other);
+        Simulation& operator=(const Simulation& other);
+        Simulation(Simulation&& other);
+        Simulation& operator=(Simulation&& other);
 
     private:
         bool isRunning;

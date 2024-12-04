@@ -21,20 +21,22 @@ Plan::Plan(const Plan& other)
       settlement(other.settlement),
       selectionPolicy(other.selectionPolicy ? other.selectionPolicy->clone() : nullptr),
       status(other.status),
+      facilities(),
+      underConstruction(),
       facilityOptions(other.facilityOptions),
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
       environment_score(other.environment_score) {
     
+    // Deep copy for underConstruction
+    for (Facility* facility : other.underConstruction) {
+        underConstruction.push_back(new Facility(*facility)); // Create new Facility instance
+    }
     // Deep copy for facilities
     for (Facility* facility : other.facilities) {
         facilities.push_back(new Facility(*facility)); // Create new Facility instance
     }
 
-    // Deep copy for underConstruction
-    for (Facility* facility : other.underConstruction) {
-        underConstruction.push_back(new Facility(*facility)); // Create new Facility instance
-    }
 }
 
 

@@ -86,7 +86,7 @@ void AddSettlement::act(Simulation &simulation){
    if (simulation.isSettlementExists(settlementName)){
         error("Settlement already exists");
    }else{
-        simulation.addSettlement(&Settlement(settlementName,settlementType));
+        simulation.addSettlement(new Settlement(settlementName, settlementType));
         complete();
    }
 }
@@ -186,6 +186,9 @@ const std::string ChangePlanPolicy::toString() const
     return "changePolicy "+std::to_string(planId) +" "+ newPolicy +this->statusToString();
 }
 
+ChangePlanPolicy *ChangePlanPolicy::clone() const{
+    return new ChangePlanPolicy(planId,newPolicy);
+}
 
 void ChangePlanPolicy::act(Simulation &simulation)
 {
@@ -208,13 +211,13 @@ void ChangePlanPolicy::act(Simulation &simulation)
     } 
     else{  error("Cannot change selection policy");}
     
-    if(&i!=nullptr)
-    {
-        std::cout << "planID: " << planId << std::endl;
-        std::cout << "previousPolicy: " << a << std::endl;
-        std::cout << "newPolicy: " << i << std::endl;
+    // if(&i!=nullptr)
+    // {
+    //     std::cout << "planID: " << planId << std::endl;
+    //     std::cout << "previousPolicy: " << a << std::endl;
+    //     std::cout << "newPolicy: " << i << std::endl;
 
-    }
+    // }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

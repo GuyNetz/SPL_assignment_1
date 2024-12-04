@@ -253,3 +253,89 @@ void Simulation::print_action_log(){
         std::cout << actionsLog[i]->toString() << std::endl;  // Directly use -> on actionsLog[i]
     } 
 }
+// rule of 5
+
+Simulation::~Simulation() {
+    for (auto settlement : settlements) {
+        delete settlement;  
+    }
+}
+Simulation::Simulation(const Simulation& other)
+    : isRunning(other.isRunning),
+      planCounter(other.planCounter),
+      actionsLog(other.actionsLog),
+      plans(),
+      settlements(),
+      facilitiesOptions(other.facilitiesOptions) {
+
+    for (auto settlement : other.settlements) {
+        settlements.push_back(new Settlement(*settlement)); 
+    }
+    for (auto& plan : other.plans) {
+        plans.push_back( Plan(plan));
+    }
+}
+
+Simulation& Simulation:: operator=(const Simulation& other) {
+    if (this == &other) {
+        return *this;  
+    }
+
+   
+    for (auto settlement : settlements) {
+        delete settlement;
+    }
+    settlements.clear();
+    
+    
+    isRunning = other.isRunning;
+    planCounter = other.planCounter;
+    actionsLog = other.actionsLog;
+    for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
+    {
+        facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
+        other.facilitiesOptions[i].getLifeQualityScore(),other.facilitiesOptions[i].getEconomyScore(),other.facilitiesOptions[i].getEnvironmentScore()));
+    }
+    
+    for (auto settlement : other.settlements) {
+        settlements.push_back(new Settlement(*settlement));
+    }
+
+
+   for (auto& plan : other.plans) {
+      plans.push_back( Plan(plan));
+    }
+
+    return *this;
+}
+
+Simulation::Simulation(Simulation&& other):
+      isRunning(other.isRunning), 
+      planCounter(other.planCounter),
+      actionsLog(std::move(other.actionsLog)),
+      plans(std::move(other.plans)),              
+    settlements(std::move(other.settlements)),  
+      facilitiesOptions(std::move(other.facilitiesOptions)) {
+    other.isRunning = false;
+    other.planCounter = 0;
+}
+
+Simulation& Simulation::operator=(Simulation&& other){
+    if (this == &other) {
+        return *this; 
+    }
+    for (auto settlement : settlements) {
+        delete settlement;
+    }
+    settlements.clear();
+    isRunning = other.isRunning;
+    planCounter = other.planCounter;
+    actionsLog = std::move(other.actionsLog);
+    plans = std::move(other.plans);
+    settlements = std::move(other.settlements);
+    facilitiesOptions = std::move(other.facilitiesOptions);
+    other.isRunning = false;
+    other.planCounter = 0;
+
+    return *this;
+}
