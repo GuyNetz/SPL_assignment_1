@@ -2,16 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C/C++ Runner: Debug Session",
+      "name": "Linux$",
       "type": "cppdbg",
       "request": "launch",
+      "program": "/workspaces/SPL_assignment_1/Skeleton/bin/main", 
       "args": [],
       "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
       "externalConsole": false,
-      "cwd": "/workspaces/SPL_assignment_1/__MACOSX/Skeleton/src",
-      "program": "/workspaces/SPL_assignment_1/__MACOSX/Skeleton/src/build/Debug/outDebug",
       "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb", 
+      "preLaunchTask": "build", 
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

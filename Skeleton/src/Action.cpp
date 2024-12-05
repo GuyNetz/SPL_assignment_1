@@ -302,7 +302,7 @@ void RestoreSimulation::act(Simulation &simulation) {
         return;
     }
     simulation = *backup;
-    simulation.addAction(new RestoreSimulation());
+    simulation.addAction(this->clone());
     complete();
 }
 
