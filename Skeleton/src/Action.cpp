@@ -171,13 +171,13 @@ AddFacility* AddFacility::clone() const{
 ///////////////////////////////////////////print status class
 
 PrintPlanStatus::PrintPlanStatus(int planId):
-planId(planId)
-{}
+planId(planId) {}
+
 void PrintPlanStatus::act(Simulation &simulation){
     if(simulation.isPlanExists(planId)){
-    std::cout << simulation.getPlan(planId).toString() << std::to_string(planId) << std::endl;
-    simulation.addAction(new PrintPlanStatus(planId));
-    complete();
+        std::cout << simulation.getPlan(planId).toString() << std::endl;
+        simulation.addAction(new PrintPlanStatus(planId));
+        complete();
     }
     else(error("Plan doesn’t exist"));
 }
@@ -186,9 +186,8 @@ PrintPlanStatus *PrintPlanStatus::clone() const{
     return new PrintPlanStatus(planId);
 }
 
-const string PrintPlanStatus::toString() const
-{
-    return "planStatus  " + std::to_string(planId) +" " + this->statusToString() ;
+const string PrintPlanStatus::toString() const{
+    return "planStatus " + std::to_string(planId) + " " + this->statusToString();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -196,11 +195,9 @@ const string PrintPlanStatus::toString() const
 
 ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):
 planId(planId),
-newPolicy(newPolicy)
-{}
+newPolicy(newPolicy) {}
 
-const std::string ChangePlanPolicy::toString() const
-{ 
+const std::string ChangePlanPolicy::toString() const{ 
     return "changePolicy "+std::to_string(planId) +" "+ newPolicy +this->statusToString();
 }
 
