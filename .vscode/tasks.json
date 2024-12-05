@@ -6,7 +6,7 @@
             "label": "build",
             "command": "make", 
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "/workspaces/SPL_assignment_1/Skeleton",
             },
             "group": {
                 "kind": "build",

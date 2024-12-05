@@ -6,7 +6,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "/workspaces/SPL_assignment_1/Skeleton/bin/main", 
-      "args": [],
+      "args": ["/workspaces/SPL_assignment_1/Skeleton/config_file.txt"],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
