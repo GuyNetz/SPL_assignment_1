@@ -57,9 +57,8 @@ AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 
 //act function
 void AddPlan::act(Simulation &simulation){
-    if (simulation.isSettlementExists(settlementName)){
-       error("Cannot create this plan");
-    }else if(selectionPolicy == "nve"){
+
+    if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());
         simulation.addAction(new AddPlan(settlementName,selectionPolicy));
         complete();
@@ -98,6 +97,7 @@ void AddSettlement::act(Simulation &simulation){
         error("Settlement already exists");
    }else{
         simulation.addSettlement(new Settlement(settlementName, settlementType));
+        simulation.addAction(this->clone());
         complete();
    }
    
@@ -175,7 +175,7 @@ planId(planId)
 {}
 void PrintPlanStatus::act(Simulation &simulation){
     if(simulation.isPlanExists(planId)){
-    std::cout << simulation.getPlan(planId).toString() << std::to_string(planId) << std::endl;
+    std::cout << simulation.getPlan(planId).toString();
     simulation.addAction(new PrintPlanStatus(planId));
     complete();
     }
