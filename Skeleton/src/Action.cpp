@@ -39,7 +39,7 @@ void SimulateStep::act(Simulation &simulation) {
         simulation.step();
     }
     complete();
-    simulation.addAction(new SimulateStep(numOfSteps));
+    simulation.addAction(this->clone());
 }
 
 const string SimulateStep::toString() const {
@@ -61,19 +61,19 @@ void AddPlan::act(Simulation &simulation){
        error("Cannot create this plan");
     }else if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());
-        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        simulation.addAction(this->clone());
         complete();
     }else if(selectionPolicy == "bal"){
         simulation.addPlan(simulation.getSettlement(settlementName), new BalancedSelection(0,0,0));
-        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        simulation.addAction(this->clone());
         complete();
     }else if (selectionPolicy == "eco"){
         simulation.addPlan(simulation.getSettlement(settlementName), new EconomySelection());
-        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        simulation.addAction(this->clone());
         complete();
     }else if (selectionPolicy == "env"){
         simulation.addPlan(simulation.getSettlement(settlementName), new SustainabilitySelection());
-        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        simulation.addAction(this->clone());
         complete();
     } else {error("Cannot create this plan");}  
     
@@ -258,7 +258,7 @@ Close::Close(){}
 
 void Close::act(Simulation &simulation){
     simulation.close();
-    simulation.addAction(new Close());
+    simulation.addAction(this->clone());
     complete();
 }
 
@@ -280,7 +280,7 @@ void BackupSimulation::act(Simulation &simulation){
         backup = nullptr; 
     }
     backup = new Simulation(simulation);
-    simulation.addAction(new BackupSimulation());
+    simulation.addAction(this->clone());
     complete();
 }
 
