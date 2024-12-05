@@ -188,6 +188,7 @@ void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectio
 
 //adds a new action to actionsLog vector
 void Simulation::addAction(BaseAction *action) {
+    
     actionsLog.push_back(action);
     
     
@@ -305,6 +306,7 @@ Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
     }
+    settlements.clear();
         for (auto action : actionsLog) {
         delete action;  
     }
