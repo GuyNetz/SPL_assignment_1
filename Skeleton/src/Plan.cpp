@@ -43,16 +43,15 @@ Plan::Plan(const Plan& other)
 //destructor
 Plan::~Plan() {
     delete selectionPolicy; // Free the memory allocated for selectionPolicy
-
-    // Free memory for each Facility in the facilities vector
+   // Free memory for each Facility in the facilities vector
     for (Facility* facility : facilities) {
         delete facility;
     }
-
     // Free memory for each Facility in the underConstruction vector
     for (Facility* facility : underConstruction) {
         delete facility;
     }
+    
 }
 
 //getters

@@ -172,6 +172,7 @@ void Simulation::start() {
         if (actionObject != nullptr) {
             actionObject->act(*this); // Execute the action
             delete actionObject;     // Free the memory for the action
+            actionObject=nullptr;
         } else {
             std::cout << "Unknown command: " << command << std::endl;
         }
@@ -282,6 +283,7 @@ void Simulation::close() {
 
     for (BaseAction *action : actionsLog) {
         delete action;
+        action=nullptr;
     }
     actionsLog.clear();
 }
@@ -308,9 +310,18 @@ Simulation::~Simulation() {
     }
     settlements.clear();
         for (auto action : actionsLog) {
-        delete action;  
+            if (action!=nullptr)
+            {
+                action=nullptr;
+                delete action; 
+                
+            }
+            
+         
     }
     actionsLog.clear();
+
+
 }
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
