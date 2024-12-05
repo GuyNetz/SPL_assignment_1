@@ -12,7 +12,7 @@ Simulation* backup = nullptr;
 //constructor
 Simulation::Simulation(const string &configFilePath):
 isRunning(false),
-planCounter(1),
+planCounter(0),
 actionsLog(),
 plans(),
 settlements(),
@@ -58,9 +58,7 @@ facilitiesOptions() {
         } else if (command == "plan") {
             string settlementName = parsedAr[1];
             string policyType = parsedAr[2];
-
             Settlement &settlement = getSettlement(settlementName);
-
             SelectionPolicy *policy = nullptr;
             if (policyType == "nve") {
                 policy = new NaiveSelection();
@@ -134,7 +132,7 @@ void Simulation::start() {
                 
             }
 
-        } else if (action == "print_status") {
+        } else if (action == "planStatus") {
             if (parsedCommand.size() == 2) {
                 int planID = std::stoi(parsedCommand[1]);
                 actionObject = new PrintPlanStatus(planID);
@@ -150,13 +148,14 @@ void Simulation::start() {
             }
         } else if (action=="facility"){
             if(parsedCommand.size() == 7){
-            string name = parsedCommand[1];
-            int category = std::stoi(parsedCommand[2]);
-            int price = std::stoi(parsedCommand[3]);
-            int lifeQImpact = std::stoi(parsedCommand[4]);
-            int ecoImpact = std::stoi(parsedCommand[5]);
-            int envImpact = std::stoi(parsedCommand[6]);
-            actionObject = new AddFacility(name,static_cast<FacilityCategory>(category),price,lifeQImpact,ecoImpact,envImpact);
+             string name = parsedCommand[1];
+              int category = std::stoi(parsedCommand[2]);
+              int price = std::stoi(parsedCommand[3]);
+              int lifeQImpact = std::stoi(parsedCommand[4]);
+              int ecoImpact = std::stoi(parsedCommand[5]);
+              int envImpact = std::stoi(parsedCommand[6]);
+              actionObject = new AddFacility(name,static_cast<FacilityCategory>(category),price,lifeQImpact,ecoImpact,envImpact);
+             
 
             }
 
@@ -165,7 +164,7 @@ void Simulation::start() {
                 string name = parsedCommand[1];
                 int type = std::stoi(parsedCommand[2]);
                 actionObject = new AddSettlement(name,static_cast<SettlementType>(type));
-
+                
             }
          }
         
@@ -184,7 +183,7 @@ void Simulation::start() {
 //adds a new plan to plans vector using the ID counter
 void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){  
     plans.push_back(Plan(planCounter,settlement,selectionPolicy,facilitiesOptions));
-    planCounter++; 
+    planCounter++;
 }
 
 //adds a new action to actionsLog vector
@@ -244,12 +243,18 @@ Settlement &Simulation::getSettlement(const string &settlementName) {
 
 // check if the id exist. because it start from 0 planid== to its place in the array
 Plan&Simulation::getPlan(const int planID){
-    if(planID <= planCounter){
-        return plans[planID - 1];
+    if(isPlanExists(planID)){
+        return plans[planID];
     }
     return plans[0];    //shouldnt get here
 }
-
+bool Simulation::isPlanExists(const int planID){
+    if(0<=planID && planID<=planCounter-1) {
+        return true;
+    }
+    else{ return false;}
+    
+}
 //advancing all plan by one step
 void Simulation::step() {
     for (Plan &plan : plans) {

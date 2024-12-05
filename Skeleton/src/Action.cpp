@@ -5,7 +5,7 @@ extern Simulation* backup;
 //****************************** BaseAction ******************************
 //constructor
 BaseAction::BaseAction()
-:errorMsg(""), status(ActionStatus::COMPLETED) {}
+:errorMsg(), status(ActionStatus::COMPLETED) {}
 
 //getters
 ActionStatus BaseAction::getStatus() const{return status;}
@@ -18,6 +18,7 @@ void BaseAction::complete(){
 void BaseAction::error(string errorMsg){
     status = ActionStatus::ERROR;
     this->errorMsg = errorMsg;
+    std::cout << errorMsg << std::endl;
 }
 
 const string &BaseAction::getErrorMsg() const{return errorMsg;}
@@ -56,19 +57,27 @@ AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 
 //act function
 void AddPlan::act(Simulation &simulation){
-    if (!simulation.isSettlementExists(settlementName)){
+    if (simulation.isSettlementExists(settlementName)){
        error("Cannot create this plan");
     }else if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());
+        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        complete();
     }else if(selectionPolicy == "bal"){
         simulation.addPlan(simulation.getSettlement(settlementName), new BalancedSelection(0,0,0));
+        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        complete();
     }else if (selectionPolicy == "eco"){
         simulation.addPlan(simulation.getSettlement(settlementName), new EconomySelection());
+        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        complete();
     }else if (selectionPolicy == "env"){
         simulation.addPlan(simulation.getSettlement(settlementName), new SustainabilitySelection());
-    } else {  error("Cannot create this plan");
-    }  
-    simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        simulation.addAction(new AddPlan(settlementName,selectionPolicy));
+        complete();
+    } else {error("Cannot create this plan");}  
+    
+
 }
 
  const string AddPlan::toString() const{
@@ -91,7 +100,7 @@ void AddSettlement::act(Simulation &simulation){
         simulation.addSettlement(new Settlement(settlementName, settlementType));
         complete();
    }
-   simulation.addAction(new AddSettlement(settlementName,settlementType));
+   
 }
 
  const string AddSettlement::toString() const{
@@ -132,7 +141,7 @@ void AddFacility::act(Simulation &simulation){
         simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
         complete();
    }
-   simulation.addAction(new AddFacility(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
+   
 }
 
 const string AddFacility::toString() const{
@@ -165,8 +174,12 @@ PrintPlanStatus::PrintPlanStatus(int planId):
 planId(planId)
 {}
 void PrintPlanStatus::act(Simulation &simulation){
-    simulation.getPlan(planId).toString();
+    if(simulation.isPlanExists(planId)){
+    std::cout << simulation.getPlan(planId).toString() << std::to_string(planId) << std::endl;
     simulation.addAction(new PrintPlanStatus(planId));
+    complete();
+    }
+    else(error("Plan doesn’t exist"));
 }
 
 PrintPlanStatus *PrintPlanStatus::clone() const{
@@ -175,7 +188,7 @@ PrintPlanStatus *PrintPlanStatus::clone() const{
 
 const string PrintPlanStatus::toString() const
 {
-    return "planStatus  "+planId + this->statusToString() ;
+    return "planStatus  " + std::to_string(planId) +" " + this->statusToString() ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +234,8 @@ void ChangePlanPolicy::act(Simulation &simulation)
        std::cout << "previousPolicy: " << a << std::endl;
        std::cout << "newPolicy: " << i << std::endl;
     }
-simulation.addAction(new ChangePlanPolicy(planId,newPolicy));
+    simulation.addAction(new ChangePlanPolicy(planId,newPolicy));
+    complete();
     
 }
 
@@ -232,7 +246,9 @@ PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
     simulation.print_action_log();
-     simulation.addAction(this->clone());
+    
+     complete();
+      simulation.addAction(this->clone());
     
 }
 
@@ -252,6 +268,7 @@ Close::Close(){}
 void Close::act(Simulation &simulation){
     simulation.close();
     simulation.addAction(new Close());
+    complete();
 }
 
 Close *Close::clone() const{ 
@@ -274,6 +291,7 @@ void BackupSimulation::act(Simulation &simulation){
     }
     backup = new Simulation(simulation);
     simulation.addAction(new BackupSimulation());
+    complete();
 }
 
 BackupSimulation *BackupSimulation::clone() const{ 
@@ -294,6 +312,7 @@ void RestoreSimulation::act(Simulation &simulation) {
         simulation = *backup;
     }
     simulation.addAction(new RestoreSimulation());
+    complete();
 }
 
 RestoreSimulation *RestoreSimulation::clone() const{

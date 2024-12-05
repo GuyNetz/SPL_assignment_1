@@ -8,7 +8,7 @@ using namespace std;
 
 
 int main(int argc, char** argv){
-    std::cout<<"got to main"<<std::endl;
+    
     if(argc!=2){
         cout << "usage: simulation <config_path>" << endl;
         return 0;
@@ -20,7 +20,7 @@ int main(int argc, char** argv){
     	delete backup;
     	backup = nullptr;
     }
-    std::cout<<"finished main"<<std::endl;
+    
     //Settlement test
     // Settlement s("testName", SettlementType::METROPOLIS);
     // cout << s.toString();
