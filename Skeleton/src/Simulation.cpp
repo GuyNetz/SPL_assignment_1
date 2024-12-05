@@ -139,7 +139,7 @@ void Simulation::start() {
                 
             }
 
-        } else if (action == "change_policy") {
+        } else if (action == "changepolicy") {
             if (parsedCommand.size() == 3) {
                 int planID = std::stoi(parsedCommand[1]);
                 const std::string &newPolicy = parsedCommand[2];
@@ -189,6 +189,8 @@ void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectio
 //adds a new action to actionsLog vector
 void Simulation::addAction(BaseAction *action) {
     actionsLog.push_back(action);
+    
+    
 }
 
 
@@ -303,6 +305,10 @@ Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
     }
+        for (auto action : actionsLog) {
+        delete action;  
+    }
+    actionsLog.clear();
 }
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
@@ -359,7 +365,7 @@ Simulation::Simulation(Simulation&& other):
       actionsLog(std::move(other.actionsLog)),
       plans(std::move(other.plans)),              
     settlements(std::move(other.settlements)),  
-      facilitiesOptions(std::move(other.facilitiesOptions)) {
+    facilitiesOptions(std::move(other.facilitiesOptions)) {
     other.isRunning = false;
     other.planCounter = 0;
 }
