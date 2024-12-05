@@ -42,7 +42,7 @@ facilitiesOptions() {
             string name = parsedAr[1];
             int type = std::stoi(parsedAr[2]);
              addSettlement(new Settlement(name, static_cast<SettlementType>(type))); // this use simulation's function 
-            // AddSettlement(name, static_cast<SettlementType>(type)).act(*this);
+            
 
         //adding new facilities
         } else if (command == "facility") {
@@ -114,7 +114,7 @@ void Simulation::start() {
             if (parsedCommand.size() == 1) {
                 
                 actionObject = new PrintActionsLog();
-                actionObject->act(*this);
+                
             }
 
         } else if (action == "close") {
@@ -125,20 +125,20 @@ void Simulation::start() {
         } else if (action == "backup") {
             if (parsedCommand.size() == 1) {
                 actionObject = new BackupSimulation();
-                actionObject->act(*this);
+                
             }
 
         } else if (action == "restore") {
             if (parsedCommand.size() == 1) {
                 actionObject = new RestoreSimulation();
-                actionObject->act(*this);
+                
             }
 
         } else if (action == "print_status") {
             if (parsedCommand.size() == 2) {
                 int planID = std::stoi(parsedCommand[1]);
                 actionObject = new PrintPlanStatus(planID);
-                actionObject->act(*this);
+                
             }
 
         } else if (action == "change_policy") {
@@ -146,9 +146,29 @@ void Simulation::start() {
                 int planID = std::stoi(parsedCommand[1]);
                 const std::string &newPolicy = parsedCommand[2];
                 actionObject = new ChangePlanPolicy(planID, newPolicy);
-                actionObject->act(*this);
+                
             }
-        }
+        } else if (action=="facility"){
+            if(parsedCommand.size() == 7){
+            string name = parsedCommand[1];
+            int category = std::stoi(parsedCommand[2]);
+            int price = std::stoi(parsedCommand[3]);
+            int lifeQImpact = std::stoi(parsedCommand[4]);
+            int ecoImpact = std::stoi(parsedCommand[5]);
+            int envImpact = std::stoi(parsedCommand[6]);
+            actionObject = new AddFacility(name,static_cast<FacilityCategory>(category),price,lifeQImpact,ecoImpact,envImpact);
+
+            }
+
+         } else if(action=="settlement"){
+            if(parsedCommand.size() == 3){
+                string name = parsedCommand[1];
+                int type = std::stoi(parsedCommand[2]);
+                actionObject = new AddSettlement(name,static_cast<SettlementType>(type));
+
+            }
+         }
+        
 
         if (actionObject != nullptr) {
             actionObject->act(*this); // Execute the action
@@ -156,6 +176,8 @@ void Simulation::start() {
         } else {
             std::cout << "Unknown command: " << command << std::endl;
         }
+
+        
     }
 }
 
@@ -264,9 +286,10 @@ void Simulation::open() {
 
 //prints actions log
 void Simulation::print_action_log(){
-    
     for (size_t i = 0; i < actionsLog.size(); i++) {
-        std::cout << actionsLog[i]->toString() << std::endl;  // Directly use -> on actionsLog[i]
+        std::cout << actionsLog[i]->toString() << std::endl; 
+        
+
     } 
 }
 // rule of 5

@@ -232,8 +232,7 @@ PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
     simulation.print_action_log();
-    std::cout << "got to action act " << std::endl;
-    simulation.addAction(this->clone());
+     simulation.addAction(this->clone());
     
 }
 
