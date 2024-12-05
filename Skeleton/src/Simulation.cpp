@@ -29,8 +29,10 @@ facilitiesOptions() {
     string line;
     while (std::getline(configFile, line)) {
         vector<string> parsedAr = Auxiliary::parseArguments(line);
+
         if (parsedAr.empty()) { // Skip empty lines
             continue; 
+            
         }
 
         const string &command = parsedAr[0];    //saving the first word(command)
@@ -39,7 +41,8 @@ facilitiesOptions() {
         if (command == "settlement") {
             string name = parsedAr[1];
             int type = std::stoi(parsedAr[2]);
-            addSettlement(new Settlement(name, static_cast<SettlementType>(type)));
+             addSettlement(new Settlement(name, static_cast<SettlementType>(type))); // this use simulation's function 
+            // AddSettlement(name, static_cast<SettlementType>(type)).act(*this);
 
         //adding new facilities
         } else if (command == "facility") {
@@ -72,6 +75,7 @@ facilitiesOptions() {
             addPlan(settlement, policy);
         }
     }
+    
 }
 
 void Simulation::start() {
@@ -86,6 +90,7 @@ void Simulation::start() {
         std::vector<std::string> parsedCommand = Auxiliary::parseArguments(command);
         if (parsedCommand.empty()) {
             continue; // Ignore empty commands
+            
         }
 
         const std::string &action = parsedCommand[0];
@@ -105,8 +110,11 @@ void Simulation::start() {
             }
 
         } else if (action == "log") {
+            
             if (parsedCommand.size() == 1) {
+                
                 actionObject = new PrintActionsLog();
+                actionObject->act(*this);
             }
 
         } else if (action == "close") {
@@ -117,17 +125,20 @@ void Simulation::start() {
         } else if (action == "backup") {
             if (parsedCommand.size() == 1) {
                 actionObject = new BackupSimulation();
+                actionObject->act(*this);
             }
 
         } else if (action == "restore") {
             if (parsedCommand.size() == 1) {
                 actionObject = new RestoreSimulation();
+                actionObject->act(*this);
             }
 
         } else if (action == "print_status") {
             if (parsedCommand.size() == 2) {
                 int planID = std::stoi(parsedCommand[1]);
                 actionObject = new PrintPlanStatus(planID);
+                actionObject->act(*this);
             }
 
         } else if (action == "change_policy") {
@@ -135,6 +146,7 @@ void Simulation::start() {
                 int planID = std::stoi(parsedCommand[1]);
                 const std::string &newPolicy = parsedCommand[2];
                 actionObject = new ChangePlanPolicy(planID, newPolicy);
+                actionObject->act(*this);
             }
         }
 
@@ -252,6 +264,7 @@ void Simulation::open() {
 
 //prints actions log
 void Simulation::print_action_log(){
+    
     for (size_t i = 0; i < actionsLog.size(); i++) {
         std::cout << actionsLog[i]->toString() << std::endl;  // Directly use -> on actionsLog[i]
     } 

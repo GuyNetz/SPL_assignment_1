@@ -38,6 +38,7 @@ void SimulateStep::act(Simulation &simulation) {
         simulation.step();
     }
     complete();
+    simulation.addAction(new SimulateStep(numOfSteps));
 }
 
 const string SimulateStep::toString() const {
@@ -67,6 +68,7 @@ void AddPlan::act(Simulation &simulation){
         simulation.addPlan(simulation.getSettlement(settlementName), new SustainabilitySelection());
     } else {  error("Cannot create this plan");
     }  
+    simulation.addAction(new AddPlan(settlementName,selectionPolicy));
 }
 
  const string AddPlan::toString() const{
@@ -89,6 +91,7 @@ void AddSettlement::act(Simulation &simulation){
         simulation.addSettlement(new Settlement(settlementName, settlementType));
         complete();
    }
+   simulation.addAction(new AddSettlement(settlementName,settlementType));
 }
 
  const string AddSettlement::toString() const{
@@ -129,6 +132,7 @@ void AddFacility::act(Simulation &simulation){
         simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
         complete();
    }
+   simulation.addAction(new AddFacility(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
 }
 
 const string AddFacility::toString() const{
@@ -162,6 +166,7 @@ planId(planId)
 {}
 void PrintPlanStatus::act(Simulation &simulation){
     simulation.getPlan(planId).toString();
+    simulation.addAction(new PrintPlanStatus(planId));
 }
 
 PrintPlanStatus *PrintPlanStatus::clone() const{
@@ -216,7 +221,7 @@ void ChangePlanPolicy::act(Simulation &simulation)
        std::cout << "previousPolicy: " << a << std::endl;
        std::cout << "newPolicy: " << i << std::endl;
     }
-
+simulation.addAction(new ChangePlanPolicy(planId,newPolicy));
     
 }
 
@@ -227,6 +232,9 @@ PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
     simulation.print_action_log();
+    std::cout << "got to action act " << std::endl;
+    simulation.addAction(this->clone());
+    
 }
 
 PrintActionsLog *PrintActionsLog::clone() const{
@@ -234,7 +242,7 @@ PrintActionsLog *PrintActionsLog::clone() const{
 }
 
 const string PrintActionsLog::toString() const{
-    return "log" + this->statusToString() ;
+    return "log " + this->statusToString() ;
 }
 
 
@@ -244,6 +252,7 @@ Close::Close(){}
 
 void Close::act(Simulation &simulation){
     simulation.close();
+    simulation.addAction(new Close());
 }
 
 Close *Close::clone() const{ 
@@ -265,6 +274,7 @@ void BackupSimulation::act(Simulation &simulation){
         backup = nullptr; 
     }
     backup = new Simulation(simulation);
+    simulation.addAction(new BackupSimulation());
 }
 
 BackupSimulation *BackupSimulation::clone() const{ 
@@ -284,6 +294,7 @@ void RestoreSimulation::act(Simulation &simulation) {
     if (backup != nullptr) {
         simulation = *backup;
     }
+    simulation.addAction(new RestoreSimulation());
 }
 
 RestoreSimulation *RestoreSimulation::clone() const{
