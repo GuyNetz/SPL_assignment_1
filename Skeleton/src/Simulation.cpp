@@ -139,7 +139,7 @@ void Simulation::start() {
                 
             }
 
-        } else if (action == "change_policy") {
+        } else if (action == "change policy") {
             if (parsedCommand.size() == 3) {
                 int planID = std::stoi(parsedCommand[1]);
                 const std::string &newPolicy = parsedCommand[2];

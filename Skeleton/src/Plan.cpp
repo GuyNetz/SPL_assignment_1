@@ -107,22 +107,16 @@ void Plan::printStatus(){
 }
 
 string Plan::policy_tostring(){
-if(selectionPolicy->toString()=="nve")
-    return "Naive";
-    else if (selectionPolicy->toString()=="bal")
-    {
+    if(selectionPolicy->toString()=="nve"){
+        return "Naive";
+    }else if (selectionPolicy->toString()=="bal"){
         return "Balanced";
-    }
-    else if (selectionPolicy->toString()=="eco")
-    {
+    } else if (selectionPolicy->toString()=="eco"){
         return "Economy";
-    }
-    else if(selectionPolicy->toString()=="env")
-    {
+    } else if(selectionPolicy->toString()=="env"){
         return "Sustainability";
-    }
-    else
-    return " ";//shouldnt get here.
+    }else
+        return " ";//shouldnt get here.
     
     
 }
