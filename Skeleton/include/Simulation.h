@@ -46,4 +46,3 @@ class Simulation {
 
 
 
-extern Simulation* backup;

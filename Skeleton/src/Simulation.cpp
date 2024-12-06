@@ -6,9 +6,6 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-
-Simulation* backup = nullptr;
-
 //constructor
 Simulation::Simulation(const string &configFilePath):
 isRunning(false),
@@ -307,22 +304,26 @@ void Simulation::print_action_log(){
 Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
-    }
+     }
     settlements.clear();
-        for (auto action : actionsLog) {
-            if (action!=nullptr)
-            {
-                action=nullptr;
-                delete action; 
-                
-            }
-            
-         
-    }
-    actionsLog.clear();
+
+    for (auto action : actionsLog) {
+        action=nullptr;
+        delete action;  
+     }
+
+     actionsLog.clear();
+
+    //  for (size_t i = 0; i < plans.size(); i++)
+    //  {
+    //    plans[i].~Plan();
+    //  }
+     
+   }
+    // actionsLog.clear();
 
 
-}
+
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
@@ -334,6 +335,7 @@ Simulation::Simulation(const Simulation& other)
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement)); 
     }
+    plans.clear();
     for (auto& plan : other.plans) {
         plans.push_back( Plan(plan));
     }
@@ -364,6 +366,7 @@ Simulation& Simulation:: operator=(const Simulation& other) {
         settlements.push_back(new Settlement(*settlement));
     }
 
+    plans.clear();
 
    for (auto& plan : other.plans) {
       plans.push_back( Plan(plan));

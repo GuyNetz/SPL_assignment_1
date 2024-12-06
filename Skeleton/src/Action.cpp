@@ -1,7 +1,7 @@
 #include "../include/Action.h"
 #include <string> 
 #include <sstream>
-extern Simulation* backup;
+
 //****************************** BaseAction ******************************
 //constructor
 BaseAction::BaseAction()

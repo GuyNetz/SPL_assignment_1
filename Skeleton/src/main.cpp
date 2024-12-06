@@ -5,6 +5,7 @@
 #include "../include/Plan.h"            //added to check Plan class
 #include "../include/Simulation.h"      //added to check Simulation class
 using namespace std;
+Simulation * backup;
 
 
 int main(int argc, char** argv){
