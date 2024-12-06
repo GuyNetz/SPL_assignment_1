@@ -63,6 +63,10 @@ const int Plan::getlifeQualityScore() const{return life_quality_score;}
 const int Plan::getEconomyScore() const{return economy_score;}
 const int Plan::getEnvironmentScore() const{return environment_score;}
 const vector<Facility*> &Plan::getFacilities() const{return facilities;}
+const int Plan::getPlanId() const{return plan_id;}
+const string Plan::getSettlementName() const{
+    return settlement.getName();
+}
 
   
 

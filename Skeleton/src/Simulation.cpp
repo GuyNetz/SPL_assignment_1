@@ -269,7 +269,11 @@ void Simulation::close() {
 
     // Print results
     for (const Plan &plan : plans) {
-        std::cout << plan.toString() << std::endl;
+        std::cout << "PlanID: " + std::to_string(plan.getPlanId()) + "\n";
+        std::cout << "SettlementName: " + plan.getSettlementName() + "\n";
+        std::cout << "LifeQuality_Score: " + std::to_string(plan.getlifeQualityScore()) + "\n";
+        std::cout << "Economy_Score: " + std::to_string(plan.getEconomyScore()) + "\n";
+        std::cout << "Environment_Score: " + std::to_string(plan.getEnvironmentScore()) + "\n";
     }
 
     // Free memory
