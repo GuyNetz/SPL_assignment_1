@@ -355,7 +355,16 @@ Simulation& Simulation:: operator=(const Simulation& other) {
     
     isRunning = other.isRunning;
     planCounter = other.planCounter;
-    actionsLog = other.actionsLog;
+   // actionsLog = other.actionsLog;///////////////////
+
+    for (auto action : actionsLog) {
+        action=nullptr;
+        delete action;  
+        actionsLog.push_back(action);
+     }
+
+
+
     for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
     {
         facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),

@@ -259,7 +259,7 @@ Close::Close(){}
 
 void Close::act(Simulation &simulation){
     simulation.close();
-    simulation.addAction(this->clone());
+    // simulation.addAction(this->clone());
     complete();
 }
 
