@@ -169,7 +169,7 @@ void Simulation::start() {
         if (actionObject != nullptr) {
             actionObject->act(*this); // Execute the action
             delete actionObject;     // Free the memory for the action
-            actionObject=nullptr;
+           
         } else {
             std::cout << "Unknown command: " << command << std::endl;
         }
@@ -265,7 +265,6 @@ void Simulation::step() {
 
 //ending simulation, printing results and free memory
 void Simulation::close() {
-    isRunning = false;
 
     // Print results
     for (const Plan &plan : plans) {
@@ -275,10 +274,12 @@ void Simulation::close() {
         std::cout << "Economy_Score: " + std::to_string(plan.getEconomyScore()) + "\n";
         std::cout << "Environment_Score: " + std::to_string(plan.getEnvironmentScore()) + "\n";
     }
-
+    isRunning = false;
+   
     // Free memory
     for (Settlement *settlement : settlements) {
         delete settlement;
+        settlement=nullptr;
     }
     settlements.clear();
 
@@ -287,7 +288,7 @@ void Simulation::close() {
         action=nullptr;
     }
     actionsLog.clear();
-}
+ }
 
 
 void Simulation::open() {
@@ -308,6 +309,7 @@ void Simulation::print_action_log(){
 Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
+        settlement=nullptr;
      }
     settlements.clear();
 
@@ -317,14 +319,9 @@ Simulation::~Simulation() {
      }
 
      actionsLog.clear();
-
-    //  for (size_t i = 0; i < plans.size(); i++)
-    //  {
-    //    plans[i].~Plan();
-    //  }
-     
+     plans.clear();
    }
-    // actionsLog.clear();
+    
 
 
 
@@ -349,38 +346,38 @@ Simulation& Simulation:: operator=(const Simulation& other) {
     if (this == &other) {
         return *this;  
     }
-
-   
-    for (auto settlement : settlements) {
+    if (settlements.size()!=0)
+    {
+     for (auto settlement : settlements) {
         delete settlement;
+        settlement=nullptr;
+    }
     }
     settlements.clear();
     
-    
+ 
     isRunning = other.isRunning;
     planCounter = other.planCounter;
-   // actionsLog = other.actionsLog;///////////////////
-
-    for (auto action : actionsLog) {
-        action=nullptr;
+   ///////////////////
+        for (auto action : actionsLog) {
+        if (action!=nullptr){
         delete action;  
-        actionsLog.push_back(action);
+        action=nullptr;
+        
      }
-
-
+   }
+   actionsLog.clear();
+   
 
     for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
     {
         facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
         other.facilitiesOptions[i].getLifeQualityScore(),other.facilitiesOptions[i].getEconomyScore(),other.facilitiesOptions[i].getEnvironmentScore()));
     }
-    
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement));
     }
-
     plans.clear();
-
    for (auto& plan : other.plans) {
       plans.push_back( Plan(plan));
     }
@@ -405,6 +402,7 @@ Simulation& Simulation::operator=(Simulation&& other){
     }
     for (auto settlement : settlements) {
         delete settlement;
+        settlement=nullptr;
     }
     settlements.clear();
     isRunning = other.isRunning;
