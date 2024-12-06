@@ -57,7 +57,7 @@ AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 
 //act function
 void AddPlan::act(Simulation &simulation){
-    if (simulation.isSettlementExists(settlementName)){
+    if (!(simulation.isSettlementExists(settlementName))){
        error("Cannot create this plan");
     }else if(selectionPolicy == "nve"){
         simulation.addPlan(simulation.getSettlement(settlementName), new NaiveSelection());

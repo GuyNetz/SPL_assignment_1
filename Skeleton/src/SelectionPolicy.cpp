@@ -35,14 +35,19 @@ const FacilityType& BalancedSelection::selectFacility(const vector<FacilityType>
     int index = -1;
     for (const FacilityType& facility : facilitiesOptions) {
         index = index + 1;
-        int currDif = maxDifference(LifeQualityScore+facility.getLifeQualityScore(),
-                                    EconomyScore+facility.getEconomyScore(),
-                                    EnvironmentScore+facility.getEnvironmentScore());
+        int currDif = maxDifference(LifeQualityScore + facility.getLifeQualityScore(),
+                                    EconomyScore + facility.getEconomyScore(),
+                                    EnvironmentScore + facility.getEnvironmentScore());
         if(currDif < minDif){
             minDif = currDif;
             return_index = index;
         }                            
     }
+    //updating future scores
+    LifeQualityScore = LifeQualityScore + facilitiesOptions[return_index].getLifeQualityScore();
+    EconomyScore = EconomyScore + facilitiesOptions[return_index].getEconomyScore();
+    EnvironmentScore = EnvironmentScore + facilitiesOptions[return_index].getEnvironmentScore();
+    
     return facilitiesOptions[return_index];   
 }
 
