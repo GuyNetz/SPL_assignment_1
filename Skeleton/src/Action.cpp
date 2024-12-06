@@ -98,6 +98,7 @@ void AddSettlement::act(Simulation &simulation){
    }else{
         simulation.addSettlement(new Settlement(settlementName, settlementType));
         complete();
+        simulation.addAction(this->clone());
    }
    
 }
@@ -258,7 +259,7 @@ Close::Close(){}
 
 void Close::act(Simulation &simulation){
     simulation.close();
-    simulation.addAction(this->clone());
+    // simulation.addAction(this->clone());
     complete();
 }
 
