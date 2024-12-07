@@ -4,7 +4,9 @@
 Settlement::Settlement(const string &name, SettlementType type)     //constructor
 : name(name), type(type) {}
 
-const string &Settlement::getName() const {return name;}            //name getter
+const string &Settlement::getName() const {
+    return name;
+    }            //name getter
 
 SettlementType Settlement::getType() const {return type;}           //type getter
 
@@ -18,4 +20,3 @@ if (type == SettlementType::VILLAGE) {
 }
 return "Error: Unknown settlement type\n";
 }    
-

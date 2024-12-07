@@ -18,7 +18,7 @@ Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *sele
 //copy constructor
 Plan::Plan(const Plan& other)
     : plan_id(other.plan_id),
-      settlement(other.settlement),
+      settlement(std::move(other.settlement)),
       selectionPolicy(other.selectionPolicy ? other.selectionPolicy->clone() : nullptr),
       status(other.status),
       facilities(),
@@ -27,7 +27,6 @@ Plan::Plan(const Plan& other)
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
       environment_score(other.environment_score) {
-    
     // Deep copy for underConstruction
     for (Facility* facility : other.underConstruction) {
         underConstruction.push_back(new Facility(*facility)); // Create new Facility instance
@@ -44,8 +43,10 @@ Plan::Plan(const Plan& other)
 Plan::~Plan() {
    // Free memory for each Facility in the facilities vector
    delete selectionPolicy;
+   selectionPolicy=nullptr;
     for (Facility* facility : facilities) {
         delete facility;
+        facility=nullptr;
     }
 
     
@@ -53,6 +54,7 @@ Plan::~Plan() {
     // Free memory for each Facility in the underConstruction vector
     for (Facility* facility : underConstruction) {
         delete facility;
+        facility=nullptr;
     }
     
     
@@ -65,10 +67,7 @@ const int Plan::getEnvironmentScore() const{return environment_score;}
 const vector<Facility*> &Plan::getFacilities() const{return facilities;}
 const int Plan::getPlanId() const{return plan_id;}
 const string Plan::getSettlementName() const{
-
         return settlement.getName();
-    
-    
 }
 
   
@@ -103,6 +102,7 @@ const string Plan::toString() const{
 void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy) {
     if (this->selectionPolicy != nullptr) { 
         delete this->selectionPolicy; 
+        this->selectionPolicy=nullptr;
     }
     this->selectionPolicy = selectionPolicy; 
 }

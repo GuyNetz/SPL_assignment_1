@@ -168,7 +168,8 @@ void Simulation::start() {
 
         if (actionObject != nullptr) {
             actionObject->act(*this); // Execute the action
-            delete actionObject;     // Free the memory for the action
+            delete actionObject;
+            actionObject=nullptr;     // Free the memory for the action
            
         } else {
             std::cout << "Unknown command: " << command << std::endl;
@@ -274,6 +275,9 @@ void Simulation::close() {
         std::cout << "Economy_Score: " + std::to_string(plan.getEconomyScore()) + "\n";
         std::cout << "Environment_Score: " + std::to_string(plan.getEnvironmentScore()) + "\n";
     }
+
+ 
+    
     isRunning = false;
    
     // Free memory
@@ -316,6 +320,7 @@ Simulation::~Simulation() {
     for (auto action : actionsLog) {
         action=nullptr;
         delete action;  
+        
      }
 
      actionsLog.clear();
@@ -336,7 +341,7 @@ Simulation::Simulation(const Simulation& other)
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement)); 
     }
-    plans.clear();
+    
     for (auto& plan : other.plans) {
         plans.push_back( Plan(plan));
     }
@@ -346,16 +351,23 @@ Simulation& Simulation:: operator=(const Simulation& other) {
     if (this == &other) {
         return *this;  
     }
-    if (settlements.size()!=0)
-    {
+
      for (auto settlement : settlements) {
-        delete settlement;
-        settlement=nullptr;
+        if (!const_cast<Simulation&>(other).isSettlementExists(settlement->getName()))
+        {
+            settlement=nullptr;
+            delete settlement;
+        } 
+        else{settlement=nullptr;}
+        
     }
-    }
-    settlements.clear();
+    // settlements.clear();
     
- 
+    plans.clear();
+    /////////////////
+   for (auto& plan : other.plans) {
+      plans.push_back( Plan(plan));
+    }
     isRunning = other.isRunning;
     planCounter = other.planCounter;
    ///////////////////
@@ -363,12 +375,9 @@ Simulation& Simulation:: operator=(const Simulation& other) {
         if (action!=nullptr){
         delete action;  
         action=nullptr;
-        
      }
    }
    actionsLog.clear();
-   
-
     for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
     {
         facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
@@ -377,13 +386,11 @@ Simulation& Simulation:: operator=(const Simulation& other) {
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement));
     }
-    plans.clear();
-   for (auto& plan : other.plans) {
-      plans.push_back( Plan(plan));
-    }
-
+ 
     return *this;
 }
+
+
 
 Simulation::Simulation(Simulation&& other):
       isRunning(other.isRunning), 
@@ -401,10 +408,16 @@ Simulation& Simulation::operator=(Simulation&& other){
         return *this; 
     }
     for (auto settlement : settlements) {
+        if (!other.isSettlementExists(settlement->getName()))
+        {
+         settlement=nullptr;
         delete settlement;
         settlement=nullptr;
+        }
+        else{settlement=nullptr;}
+
     }
-    settlements.clear();
+    // settlements.clear();
     isRunning = other.isRunning;
     planCounter = other.planCounter;
     actionsLog = std::move(other.actionsLog);
