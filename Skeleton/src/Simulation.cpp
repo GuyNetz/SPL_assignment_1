@@ -361,7 +361,7 @@ Simulation& Simulation:: operator=(const Simulation& other) {
         else{settlement=nullptr;}
         
     }
-    // settlements.clear();
+    
     
     plans.clear();
     /////////////////
@@ -417,7 +417,7 @@ Simulation& Simulation::operator=(Simulation&& other){
         else{settlement=nullptr;}
 
     }
-    // settlements.clear();
+    
     isRunning = other.isRunning;
     planCounter = other.planCounter;
     actionsLog = std::move(other.actionsLog);
