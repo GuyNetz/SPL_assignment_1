@@ -17,5 +17,9 @@ if (type == SettlementType::VILLAGE) {
     return "Settlement Name: " + name + ", Settlement Type: Metropolis\n";
 }
 return "Error: Unknown settlement type\n";
-}    
+}
+
+Settlement* Settlement::clone() const{
+    return new Settlement(*this);
+}
 

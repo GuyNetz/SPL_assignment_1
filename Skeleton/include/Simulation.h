@@ -28,7 +28,7 @@ class Simulation {
         void step();
         void close();
         void open();
-        void print_action_log();
+        const vector<BaseAction*>& getActionLog(); 
         ~Simulation();
         Simulation(const Simulation& other);
         Simulation& operator=(const Simulation& other);

@@ -19,14 +19,14 @@ Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *sele
 Plan::Plan(const Plan& other)
     : plan_id(other.plan_id),
       settlement(other.settlement),
-      selectionPolicy(other.selectionPolicy ? other.selectionPolicy->clone() : nullptr),
+      selectionPolicy(other.selectionPolicy->clone()),
       status(other.status),
       facilities(),
       underConstruction(),
       facilityOptions(other.facilityOptions),
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
-      environment_score(other.environment_score) {
+      environment_score(other.environment_score) {   
     
     // Deep copy for underConstruction
     for (Facility* facility : other.underConstruction) {
@@ -39,6 +39,39 @@ Plan::Plan(const Plan& other)
 
 }
 
+//Assignment operator
+Plan& Plan::operator=(const Plan& other){
+    if(this != &other){
+        plan_id = other.plan_id;
+        status = other.status;
+        life_quality_score = other.life_quality_score;
+        environment_score = other.environment_score;
+        economy_score = other.economy_score;
+
+        delete selectionPolicy;
+        selectionPolicy = other.selectionPolicy->clone();
+
+        for(int i = 0; i < facilities.size(); i++){
+            delete facilities.at(i);
+        }
+
+        for(int i = 0; i < underConstruction.size(); i++){
+            delete underConstruction.at(i);
+        }
+
+        facilities.clear();
+        underConstruction.clear();
+
+        for(int i = 0; i < other.facilities.size(); i++){
+            facilities.push_back(other.facilities.at(i)->clone());
+        }
+
+        for(int i = 0; i < other.underConstruction.size(); i++){
+            underConstruction.push_back(other.underConstruction.at(i)->clone());
+        } 
+    }
+    return *this;
+}
 
 //destructor
 Plan::~Plan() {
