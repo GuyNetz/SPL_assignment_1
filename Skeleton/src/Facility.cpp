@@ -8,10 +8,6 @@ FacilityType::FacilityType(const string &name, const FacilityCategory category, 
             :name(name), category(category), price(price), lifeQuality_score(lifeQuality_score),
             economy_score(economy_score), environment_score(environment_score) {}
 
-//copy constructor
-Facility::Facility(const Facility& other)
-:FacilityType(other.name,other.category,other.price,other.lifeQuality_score,other.economy_score,other.environment_score),settlementName(other.settlementName), timeLeft(other.price), status(other.status){}
-
 //FaciltyType getters
 const string &FacilityType::getName() const {return name;}
 int FacilityType::getCost() const {return price;}
@@ -69,9 +65,5 @@ const string Facility::toString() const {
     return ss.str();
 }
 
-Facility* Facility::clone(){
-    return new Facility(*this);
-}
 
-FacilityType& FacilityType::operator=(const FacilityType& other) {}
        

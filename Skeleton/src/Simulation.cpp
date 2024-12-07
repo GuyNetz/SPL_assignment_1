@@ -6,7 +6,6 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
-
 //constructor
 Simulation::Simulation(const string &configFilePath):
 isRunning(false),
@@ -29,7 +28,8 @@ facilitiesOptions() {
         vector<string> parsedAr = Auxiliary::parseArguments(line);
 
         if (parsedAr.empty()) { // Skip empty lines
-            continue;    
+            continue; 
+            
         }
 
         const string &command = parsedAr[0];    //saving the first word(command)
@@ -66,6 +66,7 @@ facilitiesOptions() {
             } else if (policyType == "env") {
                 policy = new SustainabilitySelection();
             }
+
             addPlan(settlement, policy);
         }
     }
@@ -103,9 +104,12 @@ void Simulation::start() {
                 actionObject = new AddPlan(settlementName, selectionPolicy);
             }
 
-        } else if (action == "log") {  
-            if (parsedCommand.size() == 1) {   
-                actionObject = new PrintActionsLog();      
+        } else if (action == "log") {
+            
+            if (parsedCommand.size() == 1) {
+                
+                actionObject = new PrintActionsLog();
+                
             }
 
         } else if (action == "close") {
@@ -115,18 +119,21 @@ void Simulation::start() {
 
         } else if (action == "backup") {
             if (parsedCommand.size() == 1) {
-                actionObject = new BackupSimulation();     
+                actionObject = new BackupSimulation();
+                
             }
 
         } else if (action == "restore") {
             if (parsedCommand.size() == 1) {
-                actionObject = new RestoreSimulation();       
+                actionObject = new RestoreSimulation();
+                
             }
 
         } else if (action == "planStatus") {
             if (parsedCommand.size() == 2) {
                 int planID = std::stoi(parsedCommand[1]);
-                actionObject = new PrintPlanStatus(planID);  
+                actionObject = new PrintPlanStatus(planID);
+                
             }
 
         } else if (action == "changePolicy") {
@@ -134,10 +141,11 @@ void Simulation::start() {
                 int planID = std::stoi(parsedCommand[1]);
                 const std::string &newPolicy = parsedCommand[2];
                 actionObject = new ChangePlanPolicy(planID, newPolicy);
+                
             }
         } else if (action=="facility"){
             if(parsedCommand.size() == 7){
-              string name = parsedCommand[1];
+             string name = parsedCommand[1];
               int category = std::stoi(parsedCommand[2]);
               int price = std::stoi(parsedCommand[3]);
               int lifeQImpact = std::stoi(parsedCommand[4]);
@@ -147,22 +155,25 @@ void Simulation::start() {
              
 
             }
+
          } else if(action=="settlement"){
             if(parsedCommand.size() == 3){
                 string name = parsedCommand[1];
                 int type = std::stoi(parsedCommand[2]);
-                actionObject = new AddSettlement(name,static_cast<SettlementType>(type));   
+                actionObject = new AddSettlement(name,static_cast<SettlementType>(type));
+                
             }
          }
         
 
         if (actionObject != nullptr) {
             actionObject->act(*this); // Execute the action
-            // delete actionObject;     // Free the memory for the action
+            delete actionObject;     // Free the memory for the action
            
         } else {
             std::cout << "Unknown command: " << command << std::endl;
         }
+
         
     }
 }
@@ -175,7 +186,10 @@ void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectio
 
 //adds a new action to actionsLog vector
 void Simulation::addAction(BaseAction *action) {
-    actionsLog.push_back(action); 
+    
+    actionsLog.push_back(action);
+    
+    
 }
 
 
@@ -236,12 +250,12 @@ Plan&Simulation::getPlan(const int planID){
     return plans[0];    //shouldnt get here
 }
 bool Simulation::isPlanExists(const int planID){
-    if(0 <= planID && planID<=planCounter - 1) {
+    if(0<=planID && planID<=planCounter-1) {
         return true;
-    }else{
-         return false;}
+    }
+    else{ return false;}
+    
 }
-
 //advancing all plan by one step
 void Simulation::step() {
     for (Plan &plan : plans) {
@@ -282,10 +296,16 @@ void Simulation::open() {
 }
 
 
+//prints actions log
+void Simulation::print_action_log(){
+    for (size_t i = 0; i < actionsLog.size(); i++) {
+        std::cout << actionsLog[i]->toString() << std::endl; 
+        
 
-
+    } 
+}
 // rule of 5
-//destructor
+
 Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
@@ -294,91 +314,105 @@ Simulation::~Simulation() {
     settlements.clear();
 
     for (auto action : actionsLog) {
-        delete action;  
         action=nullptr;
+        delete action;  
      }
 
      actionsLog.clear();
-     settlements.clear();
+     plans.clear();
    }
     
 
 
-//copy constructor
+
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
-      plans(other.plans),
+      actionsLog(other.actionsLog),
+      plans(),
+      settlements(),
       facilitiesOptions(other.facilitiesOptions) {
 
-    for(auto& action: other.actionsLog){
-        actionsLog.push_back(action->clone());
-    }    
     for (auto settlement : other.settlements) {
-        settlements.push_back(settlement->clone()); 
+        settlements.push_back(new Settlement(*settlement)); 
+    }
+    plans.clear();
+    for (auto& plan : other.plans) {
+        plans.push_back( Plan(plan));
     }
 }
 
-//Assignment operator
 Simulation& Simulation:: operator=(const Simulation& other) {
-    if (this != &other) {
-        isRunning = other.isRunning;
-        planCounter = other.planCounter;
-        plans = other.plans;
-        facilitiesOptions = other.facilitiesOptions;
-
-        for(auto settlement : settlements){
-            delete settlement;
-        }
-
-        for(auto action : actionsLog){
-            delete action;
-        }
-
-        settlements.clear();
-        actionsLog.clear();
-
-        for(auto settlement : other.settlements){
-            settlements.push_back(settlement->clone());
-        }
-
-        for (auto action : other.actionsLog) {
-            actionsLog.push_back(action->clone());
-        }       
+    if (this == &other) {
+        return *this;  
     }
-    return *this; 
+    if (settlements.size()!=0)
+    {
+     for (auto settlement : settlements) {
+        delete settlement;
+        settlement=nullptr;
+    }
+    }
+    settlements.clear();
+    
+ 
+    isRunning = other.isRunning;
+    planCounter = other.planCounter;
+   ///////////////////
+        for (auto action : actionsLog) {
+        if (action!=nullptr){
+        delete action;  
+        action=nullptr;
+        
+     }
+   }
+   actionsLog.clear();
+   
+
+    for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
+    {
+        facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
+        other.facilitiesOptions[i].getLifeQualityScore(),other.facilitiesOptions[i].getEconomyScore(),other.facilitiesOptions[i].getEnvironmentScore()));
+    }
+    for (auto settlement : other.settlements) {
+        settlements.push_back(new Settlement(*settlement));
+    }
+    plans.clear();
+   for (auto& plan : other.plans) {
+      plans.push_back( Plan(plan));
+    }
+
+    return *this;
 }
 
-// Simulation::Simulation(Simulation&& other):
-//       isRunning(other.isRunning), 
-//       planCounter(other.planCounter),
-//       actionsLog(std::move(other.actionsLog)),
-//       plans(std::move(other.plans)),              
-//     settlements(std::move(other.settlements)),  
-//     facilitiesOptions(std::move(other.facilitiesOptions)) {
-//     other.isRunning = false;
-//     other.planCounter = 0;
-// }
+Simulation::Simulation(Simulation&& other):
+      isRunning(other.isRunning), 
+      planCounter(other.planCounter),
+      actionsLog(std::move(other.actionsLog)),
+      plans(std::move(other.plans)),              
+    settlements(std::move(other.settlements)),  
+    facilitiesOptions(std::move(other.facilitiesOptions)) {
+    other.isRunning = false;
+    other.planCounter = 0;
+}
 
-// Simulation& Simulation::operator=(Simulation&& other){
-//     if (this == &other) {
-//         return *this; 
-//     }
-//     for (auto settlement : settlements) {
-//         delete settlement;
-//         settlement=nullptr;
-//     }
-//     settlements.clear();
-//     isRunning = other.isRunning;
-//     planCounter = other.planCounter;
-//     actionsLog = std::move(other.actionsLog);
-//     plans = std::move(other.plans);
-//     settlements = std::move(other.settlements);
-//     facilitiesOptions = std::move(other.facilitiesOptions);
-//     other.isRunning = false;
-//     other.planCounter = 0;
+Simulation& Simulation::operator=(Simulation&& other){
+    if (this == &other) {
+        return *this; 
+    }
+    for (auto settlement : settlements) {
+        delete settlement;
+        settlement=nullptr;
+    }
+    settlements.clear();
+    isRunning = other.isRunning;
+    planCounter = other.planCounter;
+    actionsLog = std::move(other.actionsLog);
+    plans = std::move(other.plans);
+    settlements = std::move(other.settlements);
+    facilitiesOptions = std::move(other.facilitiesOptions);
+    other.isRunning = false;
+    other.planCounter = 0;
 
-//     return *this;
-// }
-
-const vector<BaseAction*>& Simulation::getActionLog(){return actionsLog;}
+    return *this;
+}

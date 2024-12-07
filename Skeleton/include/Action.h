@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "Simulation.h"
+extern Simulation* backup;
 enum class SettlementType;
 enum class FacilityCategory;
 enum class ActionStatus{

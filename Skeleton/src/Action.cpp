@@ -1,7 +1,6 @@
 #include "../include/Action.h"
 #include <string> 
 #include <sstream>
-extern Simulation* backup;
 
 //****************************** BaseAction ******************************
 //constructor
@@ -241,9 +240,7 @@ const std::string ChangePlanPolicy::toString() const{
 PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
-     for (size_t i = 0; i < simulation.getActionLog().size() - 1; i++) {
-        std::cout << simulation.getActionLog().at(i)->toString() << std::endl; 
-    } 
+    simulation.print_action_log();
     complete();
     simulation.addAction(this->clone());   
 }
@@ -279,10 +276,13 @@ const string Close::toString() const{
 BackupSimulation::BackupSimulation(){}
 
 void BackupSimulation::act(Simulation &simulation){
-    delete backup;     
+    if (backup != nullptr) {
+        delete backup;  
+        backup = nullptr; 
+    }
     backup = new Simulation(simulation);
+    simulation.addAction(this->clone());
     complete();
-    simulation.addAction(this->clone());  
 }
 
 BackupSimulation *BackupSimulation::clone() const{ 
@@ -300,11 +300,11 @@ RestoreSimulation::RestoreSimulation(){}
 void RestoreSimulation::act(Simulation &simulation) {
     if (backup == nullptr) {
         error("No backup available");
-    }else{
-    complete();
-    simulation = *backup;
-    simulation.addAction(this->clone());   
+        return;
     }
+    simulation = *backup;
+    simulation.addAction(this->clone());
+    complete();
 }
 
 RestoreSimulation *RestoreSimulation::clone() const{

@@ -29,7 +29,7 @@ class Plan {
         const string toString() const;
         void updateStatus();
         bool isStatusAvailable() const;
-        Plan& operator=(const Plan& other);
+        Plan& operator=(const Plan& other) = delete;
         Plan& operator=(Plan&& other) = delete;  
         string policy_tostring();
 
