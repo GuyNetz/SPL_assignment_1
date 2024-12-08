@@ -51,11 +51,9 @@ SimulateStep *SimulateStep::clone() const {
 }
 
 // ****************************** AddPlan ******************************
-//constructor
 AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
 :settlementName(settlementName), selectionPolicy(selectionPolicy){}
 
-//act function
 void AddPlan::act(Simulation &simulation){
     if (!(simulation.isSettlementExists(settlementName))){
        error("Cannot create this plan");
@@ -88,7 +86,6 @@ void AddPlan::act(Simulation &simulation){
 }
 
 // ****************************** AddSettlement ******************************
-
 AddSettlement::AddSettlement(const string &settlementName,SettlementType settlementType):
 settlementName(settlementName), settlementType(settlementType) {}
 
@@ -100,7 +97,6 @@ void AddSettlement::act(Simulation &simulation){
         complete();
         simulation.addAction(this->clone());
    }
-   
 }
 
  const string AddSettlement::toString() const{
@@ -123,7 +119,6 @@ void AddSettlement::act(Simulation &simulation){
 }
 
 // ****************************** AddFacility ******************************
-//constructor
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, 
 const int price, const int lifeQualityScore, const int economyScore, const int environmentScore):
 facilityName(facilityName),
@@ -133,7 +128,6 @@ lifeQualityScore(lifeQualityScore),
 economyScore(economyScore),
 environmentScore(environmentScore) {}
 
-// act function
 void AddFacility::act(Simulation &simulation){
     if (simulation.isFacilityExists(facilityName)){
         error("Facility already exists");
@@ -141,7 +135,6 @@ void AddFacility::act(Simulation &simulation){
         simulation.addFacility(FacilityType(facilityName,facilityCategory,price,lifeQualityScore,economyScore,environmentScore));
         complete();
    }
-   
 }
 
 const string AddFacility::toString() const{
@@ -168,7 +161,6 @@ AddFacility* AddFacility::clone() const{
 
 
 // ****************************** PrintPlanStatus ******************************
-
 PrintPlanStatus::PrintPlanStatus(int planId):
 planId(planId) {}
 
@@ -190,7 +182,6 @@ const string PrintPlanStatus::toString() const{
 }
 
 // ****************************** ChangePlanPolicy ******************************
-
 ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy):
 planId(planId),
 newPolicy(newPolicy) {}
@@ -236,7 +227,6 @@ const std::string ChangePlanPolicy::toString() const{
 }
 
 // ****************************** PrintActionsLog ******************************
-
 PrintActionsLog::PrintActionsLog(){}
 
 void PrintActionsLog::act(Simulation &simulation){
@@ -259,7 +249,6 @@ Close::Close(){}
 
 void Close::act(Simulation &simulation){
     simulation.close();
-    // simulation.addAction(this->clone());
     complete();
 }
 
@@ -272,7 +261,6 @@ const string Close::toString() const{
 }
 
 // ****************************** BackupSimulation ******************************
-
 BackupSimulation::BackupSimulation(){}
 
 void BackupSimulation::act(Simulation &simulation){
@@ -294,7 +282,6 @@ const string BackupSimulation::toString() const{
    }
 
 // ****************************** RestoreSimulation ******************************
-
 RestoreSimulation::RestoreSimulation(){}
 
 void RestoreSimulation::act(Simulation &simulation) {

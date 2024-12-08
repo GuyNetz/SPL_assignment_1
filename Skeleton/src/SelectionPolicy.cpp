@@ -64,7 +64,7 @@ BalancedSelection *BalancedSelection::clone() const{
 EconomySelection::EconomySelection()    //constructor
 :lastSelectedIndex(-1) {} 
 
-const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
+const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {   //select func
     lastSelectedIndex = (lastSelectedIndex + 1) % facilitiesOptions.size();
     for (const auto& facility : facilitiesOptions) {
         if (facility.getCategory() == FacilityCategory::ECONOMY) {
@@ -86,9 +86,9 @@ EconomySelection *EconomySelection::clone() const{
 SustainabilitySelection::SustainabilitySelection()    //constructor
 :lastSelectedIndex(-1) {} 
 
-const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {
+const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions) {    //select func
     lastSelectedIndex = (lastSelectedIndex + 1) % facilitiesOptions.size();
-    for (const auto& facility : facilitiesOptions) {    //auto enables the compiler to read the type from the vector
+    for (const auto& facility : facilitiesOptions) {    
         if (facility.getCategory() == FacilityCategory::ENVIRONMENT) {
             return facility;
         }

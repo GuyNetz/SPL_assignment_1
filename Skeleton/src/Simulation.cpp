@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+
 //constructor
 Simulation::Simulation(const string &configFilePath):
 isRunning(false),
@@ -14,6 +15,7 @@ actionsLog(),
 plans(),
 settlements(),
 facilitiesOptions() {
+
     //open config file
     std::ifstream configFile(configFilePath);
 
@@ -167,9 +169,9 @@ void Simulation::start() {
         
 
         if (actionObject != nullptr) {
-            actionObject->act(*this); // Execute the action
-            delete actionObject;
-            actionObject=nullptr;     // Free the memory for the action
+            actionObject->act(*this);   // Execute the action
+            delete actionObject;        // Free the memory for the action
+            actionObject=nullptr;    
            
         } else {
             std::cout << "Unknown command: " << command << std::endl;
@@ -186,11 +188,8 @@ void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectio
 }
 
 //adds a new action to actionsLog vector
-void Simulation::addAction(BaseAction *action) {
-    
-    actionsLog.push_back(action);
-    
-    
+void Simulation::addAction(BaseAction *action) {  
+    actionsLog.push_back(action);   
 }
 
 
@@ -250,14 +249,16 @@ Plan&Simulation::getPlan(const int planID){
     }
     return plans[0];    //shouldnt get here
 }
+
 bool Simulation::isPlanExists(const int planID){
-    if(0<=planID && planID<=planCounter-1) {
+    if(0 <= planID && planID <= planCounter - 1) {
         return true;
+    }else{
+        return false;
     }
-    else{ return false;}
     
 }
-//advancing all plan by one step
+//advancing all plans by one step
 void Simulation::step() {
     for (Plan &plan : plans) {
         plan.step();
@@ -276,8 +277,6 @@ void Simulation::close() {
         std::cout << "Environment_Score: " + std::to_string(plan.getEnvironmentScore()) + "\n";
     }
 
- 
-    
     isRunning = false;
    
     // Free memory
@@ -294,56 +293,47 @@ void Simulation::close() {
     actionsLog.clear();
  }
 
-
 void Simulation::open() {
     isRunning = true;
 }
-
 
 //prints actions log
 void Simulation::print_action_log(){
     for (size_t i = 0; i < actionsLog.size(); i++) {
         std::cout << actionsLog[i]->toString() << std::endl; 
-        
-
     } 
 }
-// rule of 5
 
+// rule of 5
 Simulation::~Simulation() {
     for (auto settlement : settlements) {
         delete settlement;  
         settlement=nullptr;
-     }
+    }
     settlements.clear();
 
     for (auto action : actionsLog) {
         action=nullptr;
-        delete action;  
-        
-     }
-
+        delete action;    
+    }
      actionsLog.clear();
      plans.clear();
-   }
-    
-
-
+}
 
 Simulation::Simulation(const Simulation& other)
-    : isRunning(other.isRunning),
-      planCounter(other.planCounter),
-      actionsLog(other.actionsLog),
-      plans(),
-      settlements(),
-      facilitiesOptions(other.facilitiesOptions) {
+    :isRunning(other.isRunning),
+    planCounter(other.planCounter),
+    actionsLog(other.actionsLog),
+    plans(),
+    settlements(),
+    facilitiesOptions(other.facilitiesOptions) {
 
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement)); 
     }
     
     for (auto& plan : other.plans) {
-        plans.push_back( Plan(plan));
+        plans.push_back(Plan(plan));
     }
 }
 
@@ -352,51 +342,50 @@ Simulation& Simulation:: operator=(const Simulation& other) {
         return *this;  
     }
 
-     for (auto settlement : settlements) {
-        if (!const_cast<Simulation&>(other).isSettlementExists(settlement->getName()))
-        {
+    for (auto settlement : settlements) {
+        if (!const_cast<Simulation&>(other).isSettlementExists(settlement->getName())){
             settlement=nullptr;
             delete settlement;
-        } 
-        else{settlement=nullptr;}
-        
+        }else{
+            settlement=nullptr;
+        }  
     }
     
-    
     plans.clear();
-    /////////////////
+ 
    for (auto& plan : other.plans) {
-      plans.push_back( Plan(plan));
+      plans.push_back(Plan(plan));
     }
     isRunning = other.isRunning;
     planCounter = other.planCounter;
-   ///////////////////
-        for (auto action : actionsLog) {
+
+        for(auto action : actionsLog) {
         if (action!=nullptr){
         delete action;  
         action=nullptr;
      }
    }
+
    actionsLog.clear();
-    for (size_t i = 0; i < other.facilitiesOptions.size(); i++)
-    {
+
+    for (size_t i = 0; i < other.facilitiesOptions.size(); i++){
         facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
         other.facilitiesOptions[i].getLifeQualityScore(),other.facilitiesOptions[i].getEconomyScore(),other.facilitiesOptions[i].getEnvironmentScore()));
     }
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement));
     }
- 
+
     return *this;
 }
 
 
 
 Simulation::Simulation(Simulation&& other):
-      isRunning(other.isRunning), 
-      planCounter(other.planCounter),
-      actionsLog(std::move(other.actionsLog)),
-      plans(std::move(other.plans)),              
+    isRunning(other.isRunning), 
+    planCounter(other.planCounter),
+    actionsLog(std::move(other.actionsLog)),
+    plans(std::move(other.plans)),              
     settlements(std::move(other.settlements)),  
     facilitiesOptions(std::move(other.facilitiesOptions)) {
     other.isRunning = false;
@@ -407,14 +396,15 @@ Simulation& Simulation::operator=(Simulation&& other){
     if (this == &other) {
         return *this; 
     }
+
     for (auto settlement : settlements) {
-        if (!other.isSettlementExists(settlement->getName()))
-        {
-         settlement=nullptr;
-        delete settlement;
-        settlement=nullptr;
+        if (!other.isSettlementExists(settlement->getName())){
+            settlement=nullptr;
+            delete settlement;
+            settlement=nullptr;
+        }else{
+            settlement=nullptr;
         }
-        else{settlement=nullptr;}
 
     }
     
