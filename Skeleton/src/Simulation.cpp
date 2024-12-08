@@ -305,43 +305,46 @@ void Simulation::print_action_log(){
 }
 
 // rule of 5
+// destructor
 Simulation::~Simulation() {
+    // remove settlements.
     for (auto settlement : settlements) {
         delete settlement;  
         settlement=nullptr;
     }
-    settlements.clear();
+    settlements.clear();// clear the vector 
 
     for (auto action : actionsLog) {
         action=nullptr;
-        delete action;    
+        delete action;    //delete all the actions
     }
-     actionsLog.clear();
-     plans.clear();
-}
+     actionsLog.clear();// clear the vector 
+     plans.clear();// clear the vector 
+}// rest should delete themself by default...
 
-Simulation::Simulation(const Simulation& other)
+//copy constructor
+Simulation::Simulation(const Simulation& other) //copy base arguments
     :isRunning(other.isRunning),
     planCounter(other.planCounter),
     actionsLog(other.actionsLog),
     plans(),
     settlements(),
     facilitiesOptions(other.facilitiesOptions) {
-
+        //deep copy of settlements
     for (auto settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement)); 
     }
-    
+    //deep copy of plans
     for (auto& plan : other.plans) {
         plans.push_back(Plan(plan));
     }
 }
-
+// copy assignment operator
 Simulation& Simulation:: operator=(const Simulation& other) {
     if (this == &other) {
         return *this;  
     }
-
+    // delete settlements that the other sim doesnt have. diffrent plans have the same settle
     for (auto settlement : settlements) {
         if (!const_cast<Simulation&>(other).isSettlementExists(settlement->getName())){
             settlement=nullptr;
@@ -352,13 +355,13 @@ Simulation& Simulation:: operator=(const Simulation& other) {
     }
     
     plans.clear();
- 
+    // deleting the plans
    for (auto& plan : other.plans) {
       plans.push_back(Plan(plan));
     }
     isRunning = other.isRunning;
     planCounter = other.planCounter;
-
+    // delete actions.....
         for(auto action : actionsLog) {
         if (action!=nullptr){
         delete action;  
@@ -367,20 +370,27 @@ Simulation& Simulation:: operator=(const Simulation& other) {
    }
 
    actionsLog.clear();
-
+   //deep copy of the facilitiestoptions.
     for (size_t i = 0; i < other.facilitiesOptions.size(); i++){
         facilitiesOptions.push_back( FacilityType(other.facilitiesOptions[i].getName(),other.facilitiesOptions[i].getCategory(),other.facilitiesOptions[i].getCost(),
         other.facilitiesOptions[i].getLifeQualityScore(),other.facilitiesOptions[i].getEconomyScore(),other.facilitiesOptions[i].getEnvironmentScore()));
     }
+    // add all the new settelemnts. becaus we kept some of the settlements
     for (auto settlement : other.settlements) {
-        settlements.push_back(new Settlement(*settlement));
+        if (!this->isSettlementExists(settlement->getName()))
+        {
+            settlements.push_back(new Settlement(*settlement));
+        }
+        
+        
     }
 
     return *this;
 }
 
 
-
+//Move Constructor. basicly change Transfers ownership of resources from one object to another.
+// ""stealing the values"
 Simulation::Simulation(Simulation&& other):
     isRunning(other.isRunning), 
     planCounter(other.planCounter),
@@ -391,7 +401,9 @@ Simulation::Simulation(Simulation&& other):
     other.isRunning = false;
     other.planCounter = 0;
 }
-
+// Move Assignment Operator
+// Transfers ownership of resources during assignment. also steals values
+// but now during assignment operator
 Simulation& Simulation::operator=(Simulation&& other){
     if (this == &other) {
         return *this; 
@@ -407,9 +419,9 @@ Simulation& Simulation::operator=(Simulation&& other){
         }
 
     }
-    
     isRunning = other.isRunning;
     planCounter = other.planCounter;
+    //stealing
     actionsLog = std::move(other.actionsLog);
     plans = std::move(other.plans);
     settlements = std::move(other.settlements);
